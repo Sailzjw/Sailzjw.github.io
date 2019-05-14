@@ -92,20 +92,20 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程</p>
-<p>1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，如图1</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg" target="_blank" rel="noopener">图1</a></p>
+<p>1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，</p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg</a></p>
 <p>2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”，如图2</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg" target="_blank" rel="noopener">图2</a></p>
-<p>3.而且在其他地方报了一个异常<em>Could not resolve placeholder</em>（关键点），如图3</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg" target="_blank" rel="noopener">图3</a></p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg</a></p>
+<p>3.而且在其他地方报了一个异常<em>Could not resolve placeholder</em>（关键点）</p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg</a></p>
 <p>3.当时想的是springMvc配置文件中没有开启包扫描，然后在dispatcherServlet.xml看了下发现已经开启，那么既然已经包扫描，为什么还是读不到值呢，然后网上找了下，发现是applicationContext.xml中没有配置application.properties的路径。zzz，添加之后就能成功读取配置文件的值了。添加如图4中的属性即可</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg" target="_blank" rel="noopener">图4</a></p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg</a></p>
 <p><a href="https://www.cnblogs.com/YingYue/p/5699962.html" target="_blank" rel="noopener">参考链接</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjvnup60j0001ukpuaw1h66ut" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjvnv3cqk0002zcpuyyxz8bwl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -137,20 +137,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1.项目启动报了个日志文件找不到的错误,如图1</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg" target="_blank" rel="noopener">图1</a></p>
+        <p>1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改</p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg</a></p>
 <p>开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误</p>
-<p>2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如图2</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图2</a></p>
-<p>3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真跑起来了。可还是没法访问，并报了一个异常（看图上这dispatcherServlet.xml不是存在吗，纳闷儿了</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图3</a></p>
+<p>2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如下   <a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
+<p>3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真跑起来了。可还是没法访问，并报了一个异常（看图上这dispatcherServlet.xml不是存在吗，纳闷儿</p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
 <p>4.然后看了下项目结构，少了resource文件目录。添加之后项目就能成功访问了，之前注释掉的那块log4jConfigLocation给放开。ol</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图4</a></p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjvnup60m0002ukpunuzutxb1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjvnv3cqa0000zcpur81u9yfz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -195,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/11/hello-world/" data-id="cjvnup60b0000ukpu9b1gf27n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/11/hello-world/" data-id="cjvnv3cqh0001zcpuxs61c29u" class="article-share-link">Share</a>
       
       
     </footer>

@@ -7,17 +7,17 @@
   
   <title>ssm项目启动时的问题 | 启航的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.项目启动报了个日志文件找不到的错误,如图1 图1 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如图2 图2 3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真">
+  <meta name="description" content="1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改 https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ssm项目启动时的问题">
 <meta property="og:url" content="http://yoursite.com/2019/05/14/ssm项目启动时的问题/index.html">
 <meta property="og:site_name" content="启航的博客">
-<meta property="og:description" content="1.项目启动报了个日志文件找不到的错误,如图1 图1 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如图2 图2 3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真">
+<meta property="og:description" content="1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改 https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2019-05-14T13:47:21.425Z">
+<meta property="og:updated_time" content="2019-05-14T13:57:49.130Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ssm项目启动时的问题">
-<meta name="twitter:description" content="1.项目启动报了个日志文件找不到的错误,如图1 图1 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如图2 图2 3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真">
+<meta name="twitter:description" content="1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改 https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg 开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误 2.那么问题就来了，去web">
   
     <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
   
@@ -90,20 +90,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1.项目启动报了个日志文件找不到的错误,如图1</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg" target="_blank" rel="noopener">图1</a></p>
+        <p>1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改</p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg</a></p>
 <p>开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误</p>
-<p>2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如图2</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图2</a></p>
-<p>3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真跑起来了。可还是没法访问，并报了一个异常（看图上这dispatcherServlet.xml不是存在吗，纳闷儿了</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图3</a></p>
+<p>2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如下   <a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
+<p>3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真跑起来了。可还是没法访问，并报了一个异常（看图上这dispatcherServlet.xml不是存在吗，纳闷儿</p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
 <p>4.然后看了下项目结构，少了resource文件目录。添加之后项目就能成功访问了，之前注释掉的那块log4jConfigLocation给放开。ol</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">图4</a></p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjvnup60m0002ukpunuzutxb1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjvnv3cqa0000zcpur81u9yfz" class="article-share-link">Share</a>
       
       
     </footer>
