@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>ssm项目无法读取application.properties | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程 1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，如图1 图1 2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”，如图2 图2 3.而且在其他地方报了一个异常Could not resolve placeholder（关键">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ssm项目无法读取application.properties">
+<meta property="og:url" content="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程 1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，如图1 图1 2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”，如图2 图2 3.而且在其他地方报了一个异常Could not resolve placeholder（关键">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-05-14T13:46:32.254Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ssm项目无法读取application.properties">
+<meta name="twitter:description" content="本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程 1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，如图1 图1 2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”，如图2 图2 3.而且在其他地方报了一个异常Could not resolve placeholder（关键">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">hello world</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-ssm项目无法读取application-properties" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/14/ssm项目无法读取application-properties/" class="article-date">
+  <time datetime="2019-05-14T13:44:56.000Z" itemprop="datePublished">2019-05-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ssm项目无法读取application.properties
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程</p>
+<p>1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，如图1</p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg" target="_blank" rel="noopener">图1</a></p>
+<p>2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”，如图2</p>
+<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg" target="_blank" rel="noopener">图2</a></p>
+<p>3.而且在其他地方报了一个异常<em>Could not resolve placeholder</em>（关键点），如图3</p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg" target="_blank" rel="noopener">图3</a></p>
+<p>3.当时想的是springMvc配置文件中没有开启包扫描，然后在dispatcherServlet.xml看了下发现已经开启，那么既然已经包扫描，为什么还是读不到值呢，然后网上找了下，发现是applicationContext.xml中没有配置application.properties的路径。zzz，添加之后就能成功读取配置文件的值了。添加如图4中的属性即可</p>
+<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg" target="_blank" rel="noopener">图4</a></p>
+<p><a href="https://www.cnblogs.com/YingYue/p/5699962.html" target="_blank" rel="noopener">参考链接</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjvnup60j0001ukpuaw1h66ut" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/05/14/ssm项目启动时的问题/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ssm项目启动时的问题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/14/ssm项目无法读取application-properties/">ssm项目无法读取application.properties</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/14/ssm项目启动时的问题/">ssm项目启动时的问题</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/11/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
