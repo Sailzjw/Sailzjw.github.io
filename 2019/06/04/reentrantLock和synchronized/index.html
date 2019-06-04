@@ -5,18 +5,19 @@
   
 
   
-  <title>启航的博客</title>
+  <title>reentrantLock和synchronized | 启航的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="hello world">
-<meta property="og:type" content="website">
-<meta property="og:title" content="启航的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Synchronized：优化关注点(1.CAS 2.java对象头 ​    首相多线程（a,b）操作时，如果a 已经修改了主内存的值（向主内存写入值），那么当a释放锁（向b隐式发送消息），b获得锁时会先从主内存获取该值（从主线程读取值）。 ​    使用锁时，线程获取锁是一种悲观锁策略，即假设每次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时会阻塞其他线程获取该锁。 ​    CA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="reentrantLock和synchronized">
+<meta property="og:url" content="http://yoursite.com/2019/06/04/reentrantLock和synchronized/index.html">
 <meta property="og:site_name" content="启航的博客">
-<meta property="og:description" content="hello world">
+<meta property="og:description" content="Synchronized：优化关注点(1.CAS 2.java对象头 ​    首相多线程（a,b）操作时，如果a 已经修改了主内存的值（向主内存写入值），那么当a释放锁（向b隐式发送消息），b获得锁时会先从主内存获取该值（从主线程读取值）。 ​    使用锁时，线程获取锁是一种悲观锁策略，即假设每次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时会阻塞其他线程获取该锁。 ​    CA">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-06-04T14:22:37.845Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="启航的博客">
-<meta name="twitter:description" content="hello world">
+<meta name="twitter:title" content="reentrantLock和synchronized">
+<meta name="twitter:description" content="Synchronized：优化关注点(1.CAS 2.java对象头 ​    首相多线程（a,b）操作时，如果a 已经修改了主内存的值（向主内存写入值），那么当a释放锁（向b隐式发送消息），b获得锁时会先从主内存获取该值（从主线程读取值）。 ​    使用锁时，线程获取锁是一种悲观锁策略，即假设每次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时会阻塞其他线程获取该锁。 ​    CA">
   
     <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
   
@@ -67,9 +68,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-reentrantLock和synchronized" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-reentrantLock和synchronized" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/reentrantLock和synchronized/" class="article-date">
   <time datetime="2019-06-04T14:21:46.000Z" itemprop="datePublished">2019-06-04</time>
@@ -82,8 +81,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
+    <h1 class="article-title" itemprop="name">
+      reentrantLock和synchronized
     </h1>
   
 
@@ -125,202 +124,19 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-Spring-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/Spring-1/" class="article-date">
-  <time datetime="2019-06-04T14:20:58.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/Spring-1/">Spring-1</a>
-    </h1>
+    <a href="/2019/06/04/Spring-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spring-1</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Spring核心：<strong>DI、AOP</strong></p>
-<p>​    作用：解耦合、简化开发、测试(使用mock)、消除样板式重复代码</p>
-<p>1.DI: Spring 通过上下文（ApplicationContext）装载bean的定义，完成对象的创建。</p>
-<p>​    方式1：xml（xml的话一般选择ClassPathXmlApplicationContext进行装配）</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> =<span class="string">"knight"</span> <span class="attr">class</span> = <span class="string">"com.springinaction.knights.BraveKnight"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">ref</span> =<span class="string">"quest"</span>/&gt;</span> <span class="comment">&lt;!-- 注入Quest bean --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span>       </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> = <span class="string">"quest"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.knights.SlayDragonQuest"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 创建方法：即BravaKnigth要做的事 （不一定对）--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;T(System).out&#125;"</span>/&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>​    方式2：java配置</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">Knight</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Knight <span class="title">knight</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BraveKnigth(quest());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Quest <span class="title">quest</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SlayDragonQuest(System.out);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>2.AOP：能把功能分离出来形成可重用的组件</p>
-<p>​    这里使用Spring的aop配置命名空间 把Minstrel bean 声明为一个切面，</p>
-<p>​    先将Minstrel声明为bean，然后在<a href="aop:aspect" target="_blank" rel="noopener">aop:aspect</a> 元素中引用该bean</p>
-<p>​    在两个方法中（前置通知和后置通知） pointcut-ref 属性都使用了名字为embark的切入点，并配置expression属性来选择所应用的通知</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> =<span class="string">"minstrel"</span> <span class="attr">class</span> = <span class="string">"com.springinaction.knights. Minstrel"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"#&#123;T(System.out)&#125;"</span>/&gt;</span> <span class="comment">&lt;!-- 声明Minstrel bean--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"minstrel"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">"embark"</span> <span class="attr">expression</span>=<span class="string">"execution&#123;* *.embarkOnQuest(..)&#125;"</span> /&gt;</span>  <span class="comment">&lt;!-- 定义切点 --&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">pointcut-ref</span>=<span class="string">"embark"</span> <span class="attr">method</span>=<span class="string">"singBeforeQuest"</span> /&gt;</span> <span class="comment">&lt;!-- 定义前置通知 --&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">aop:after</span> <span class="attr">pointcut-ref</span>=<span class="string">"embark"</span> <span class="attr">method</span>=<span class="string">"singAfterQuest"</span> /&gt;</span> <span class="comment">&lt;!-- 定义后置通知 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span>      </span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>Bean</strong></p>
-<p>​    在Spring应用中，所有的对象都生存于Spring容器（container）中，即Spring容器负责创建对象，装配，配置，并管理他们的声明周期，从生到死，就是new到 finalize（）</p>
-<p>​       Spring中容器可分为两大类：BeanFactory 和ApplcationContext</p>
-<p>​    bean<strong>生命周期</strong>：1、Spring对bean进行实例化</p>
-<p>​                2、Spring 将值和bean 的引用注入到bean 对应的属性中</p>
-<p>​                3、 根据bean 实现的接口，Spring调用对应的方法，装配bean，此时它将一直驻在应用上下文中，知道上下文被销毁</p>
-<p>​                4、如果bean实现了DisposableBean接口，Spring将调用它的destroy()接口方法；如果bean使用destroy-mothod声明了销毁方法，该方法也会被调用</p>
-<p><strong>装配Bean</strong></p>
-<p>​    Spring提供了三种方式:xml,java,自动装配</p>
-<p>​    从两个角度实现自动化装配: 1.组件扫描（<strong>component scanning</strong>） 2.自动装配(<strong>autowiring</strong>)</p>
-<p>​    <code>常用注解@Autowired，@Component, @Named，@Inject</code></p>
-<p>​    通过java代码/xml装配bean</p>
-<p>​        </p>
-<p>​    </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjwhw7gya0000h0pu8dj3uf0h" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
   
 </article>
-
-
-  
-    <article id="post-玩微博有感" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/14/玩微博有感/" class="article-date">
-  <time datetime="2019-05-14T14:32:39.000Z" itemprop="datePublished">2019-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/玩微博有感/">玩微博有感</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    玩微博好几年了吧，最近正好心血来潮，放假的时候搭了个博客玩，搭这个博客的原因是什么呢？在公开的环境中，有些话并不能说（言论自由啊，墙外才有的事）</p>
-<p>​    然后在这种社交媒体上会看到各种喷子在那喷，好端端得讨论问题呢，突然就吵起来了,一开始不是很懂他们为什么会情绪变得那么暴躁，是什么经历导致他们情绪如此不稳定？我尝试去理解他们，发现这就像fenng大说的根本行不通，还是拉黑来得省事。同时微博上还是有很多有趣的人和事的，认清生活的真相后，请继续热爱生活吧。</p>
-<p>​    对了，最近跟一妹子聊天，可爱温柔吧可以这么说，三观挺合，她很自律，每天刷题准备考试，先祝她考试顺利通过。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/玩微博有感/" data-id="cjwhw7gyu0004h0pu3k7x4whg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-ssm项目无法读取application-properties" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/14/ssm项目无法读取application-properties/" class="article-date">
-  <time datetime="2019-05-14T13:44:56.000Z" itemprop="datePublished">2019-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/ssm项目无法读取application-properties/">ssm项目无法读取application.properties</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>本意是想将属性信息写到配置文件中，易于后面修改，下面就是我整个出错并修改的流程</p>
-<p>1.将配置信息写到文件后，没有修改接收的对象类型(之前是Integer，后来修改成String)，导致转换异常，</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g30n281gl7j30vi069aau.jpg</a></p>
-<p>2.修改之后拿到的DADI_IDENTIFY 为“${DADI_IDENTIFY}”</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g30n50xhspj30ra01eaa0.jpg</a></p>
-<p>3.而且在其他地方报了一个异常<em>Could not resolve placeholder</em>（关键点）</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5ijm6oj30o802imx7.jpg</a></p>
-<p>3.当时想的是springMvc配置文件中没有开启包扫描，然后在dispatcherServlet.xml看了下发现已经开启，那么既然已经包扫描，为什么还是读不到值呢，然后网上找了下，发现是applicationContext.xml中没有配置application.properties的路径。zzz，添加之后就能成功读取配置文件的值了。添加如图4中的属性即可</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g30n5vdoktj30v0054jrm.jpg</a></p>
-<p><a href="https://www.cnblogs.com/YingYue/p/5699962.html" target="_blank" rel="noopener">参考链接</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjwhw7gys0003h0puk8cq860s" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-ssm项目启动时的问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/14/ssm项目启动时的问题/" class="article-date">
-  <time datetime="2019-05-14T13:39:19.000Z" itemprop="datePublished">2019-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/ssm项目启动时的问题/">ssm项目启动时的问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.项目启动报了个日志文件找不到的错误,如下链接中的图（不知道为什么贴的超链接跳转会403，先这样将就看吧，回头搞明白再改, 现在只能先复制链接再打开查看图片了</p>
-<p><a href="https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg" target="_blank" rel="noopener">https://wx3.sinaimg.cn/mw690/005upnwVly1g2zkl6oqd6j30xh085t9t.jpg</a></p>
-<p>开始以为是没编译过去，然后clean了一下并重新编译，在target目录中找到了这个文件，但启动后还是报了这个错误</p>
-<p>2.那么问题就来了，去web.xml中找了log4jConfigLocation的配置，路径配过了，而且文件也存在，如下   <a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
-<p>3.然后我想反正这路径配了没生效，就索性把log4jConfigLocation注掉了试试，项目还真跑起来了。可还是没法访问，并报了一个异常（看图上这dispatcherServlet.xml不是存在吗，纳闷儿</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
-<p>4.然后看了下项目结构，少了resource文件目录。添加之后项目就能成功访问了，之前注释掉的那块log4jConfigLocation给放开。ol</p>
-<p><a href="https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg" target="_blank" rel="noopener">https://wx4.sinaimg.cn/mw690/005upnwVly1g2zkn4w9ljj313i0fswh9.jpg</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjwhw7gyn0001h0puq87hqmqs" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
 
 </section>
         
