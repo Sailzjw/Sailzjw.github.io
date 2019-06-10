@@ -69,6 +69,80 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-spring的高级装配" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/10/spring的高级装配/" class="article-date">
+  <time datetime="2019-06-10T13:47:54.000Z" itemprop="datePublished">2019-06-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>高级装配**</p>
+<p> 1.Spring profile:配置profile bean 可以解决环境迁移问题</p>
+<p>​    举个栗子(数据库的配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(destroyMethod=<span class="string">"shutdown"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">        .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">        .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">        .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    解读：这里创建一个类型为javax.sql.DataSource的bean，使用EmbeddedDatabaseBuilder会搭建一个嵌入式的Hypersonic数据库，模式定义在了schema.sql, 测试数据是通过test-data.sql加载。</p>
+<p>​    当你在开发环境中运行集成测试或者启动应用进行手动测试时，这个DataSource是很有用的，他使得数据库处于一个给定的状态。</p>
+<p>​    但是在生产环境中，更喜欢用JNDI从容器中去一个DataSource。如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span>  DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">    jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">    jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">    <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    QA环境又是一种DataSource配置方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>（destroyMethod = <span class="string">"close"</span>）</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">	BasicDataSource dataSource = <span class="keyword">new</span> BasicDataSource();</span><br><span class="line">	dataSource.setUrl(<span class="string">"jdbc:h2:tcp://dbserver/~/test"</span>);</span><br><span class="line">	dataSource.setDriverClassName(<span class="string">"org.h2.Driver"</span>);</span><br><span class="line">	dataSource.setUserName(<span class="string">"sa"</span>);</span><br><span class="line">	dataSource.setPassword(<span class="string">"password"</span>);</span><br><span class="line">	dataSource.setInitIalSize(<span class="number">20</span>);</span><br><span class="line">	dataSource.setMaxActive(<span class="number">30</span>);</span><br><span class="line">	<span class="keyword">return</span> dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置profile bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"dev"</span>)<span class="comment">//被写到类上，这时bean 只有在dev profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"prod"</span>)<span class="comment">//被写到类上，这时bean 只有在prod profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring3.2之后@Profile注解可以基于方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="meta">@Prodile</span>(<span class="string">"dev"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">embeddedDataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Profile</span>(<span class="string">"prod"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这里所有的bean，只有在对应的profile被激活时才会创建</p>
+<p><strong>激活profile</strong></p>
+<p>​    需要两个独立的属性，1.spring.profiles.active和spring.profiles.dev</p>
+<p>​    多种方式设置这两个属性：1.DispatcherServlet 的初始化参数 2.web应用的上下文参数</p>
+<p>3.JNDI条目 4.环境变量 5.jvm的系统属性 6.在集成测试类上，使用@ActiveProfiles注解设置</p>
+<p><strong>条件化配置bean</strong></p>
+<p>​    使用@Conditional注解</p>
+<p><strong>处理自动装配的歧义</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDessert</span><span class="params">(Dessert dessert)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.dessert = dessert;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cake</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p> 这里使用@Component注解，组件扫描时发现并创建为Spring应用上下文里面的bean,然后自动装配setDessert()中的Dessert参数时，没有唯一的值可以选。所以会抛出NoUniqueBeanDefinitionException;</p>
+<p>  解决办法：@Primary，配合@Component注解这样就可以确定首选bean，不会产生冲突</p>
+<p>​             @Qualifier，可以限定自动装配到更小的范围</p>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3><p><strong>bean的作用域</strong></p>
+<p>​    默认Spring应用上下文中所有bean都是以<strong>单例</strong>形式创建的，即一个bean无论被注入到其他bean多少次都是同一个实例。</p>
+<pre><code>让对象保持无状态并且在应用中反复使用并不合理。
+</code></pre><p>​    如果使用的类是易变的，那么重用就不安全。</p>
+<p>基于作用创建bean：大致分为4种</p>
+<p>​    1.singleton单例:在整个应用中，只创建bean的一个实例</p>
+<p>​    2.protoType 原型：每次注入或者通过Spring应用上下文获取的时候，都会创建一个新的bean实例</p>
+<p>​    3.session会话：在web应用中，为每个会话创建一个bean实例</p>
+<p>​    4.request请求：在web中，为每个请求创建一个bean实例</p>
+<p>@Scope注解搭配@Component 和@Bean</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjwqfnm8a0002ugpuos6wcncn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-reentrantLock和synchronized" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/reentrantLock和synchronized/" class="article-date">
@@ -119,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjwhw7gyq0002h0puohsuatt5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjwqfnm860001ugpuh1rtf6io" class="article-share-link">Share</a>
       
       
     </footer>
@@ -181,46 +255,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjwhw7gya0000h0pu8dj3uf0h" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-玩微博有感" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/05/14/玩微博有感/" class="article-date">
-  <time datetime="2019-05-14T14:32:39.000Z" itemprop="datePublished">2019-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/14/玩微博有感/">玩微博有感</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    玩微博好几年了吧，最近正好心血来潮，放假的时候搭了个博客玩，搭这个博客的原因是什么呢？在公开的环境中，有些话并不能说（言论自由啊，墙外才有的事）</p>
-<p>​    然后在这种社交媒体上会看到各种喷子在那喷，好端端得讨论问题呢，突然就吵起来了,一开始不是很懂他们为什么会情绪变得那么暴躁，是什么经历导致他们情绪如此不稳定？我尝试去理解他们，发现这就像fenng大说的根本行不通，还是拉黑来得省事。同时微博上还是有很多有趣的人和事的，认清生活的真相后，请继续热爱生活吧。</p>
-<p>​    对了，最近跟一妹子聊天，可爱温柔吧可以这么说，三观挺合，她很自律，每天刷题准备考试，先祝她考试顺利通过。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/玩微博有感/" data-id="cjwhw7gyu0004h0pu3k7x4whg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjwqfnm7y0000ugpue8i4zu51" class="article-share-link">Share</a>
       
       
     </footer>
@@ -266,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjwhw7gys0003h0puk8cq860s" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjwqfnm8o0004ugpugumrgudb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjwhw7gyn0001h0puq87hqmqs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjwqfnm8n0003ugpuwqf6ekoe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -351,15 +386,15 @@
       <ul>
         
           <li>
+            <a href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
+          </li>
+        
+          <li>
             <a href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
           </li>
         
           <li>
             <a href="/2019/06/04/Spring-1/">Spring-1</a>
-          </li>
-        
-          <li>
-            <a href="/2019/05/14/玩微博有感/">玩微博有感</a>
           </li>
         
           <li>
