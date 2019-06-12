@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>spring-aop | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="面向切面的Spring​    切面：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect. ​    切面的优点：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理 ​    切面中包含（通知，切点，连接点 ​    切面的工作被称为通知（通知包含5种类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring-aop">
+<meta property="og:url" content="http://yoursite.com/2019/06/12/spring-aop/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="面向切面的Spring​    切面：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect. ​    切面的优点：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理 ​    切面中包含（通知，切点，连接点 ​    切面的工作被称为通知（通知包含5种类型">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-06-12T13:27:04.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring-aop">
+<meta name="twitter:description" content="面向切面的Spring​    切面：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect. ​    切面的优点：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理 ​    切面中包含（通知，切点，连接点 ​    切面的工作被称为通知（通知包含5种类型">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">很高兴遇见你</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-spring-aop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/12/spring-aop/" class="article-date">
+  <time datetime="2019-06-12T13:26:26.000Z" itemprop="datePublished">2019-06-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      spring-aop
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="面向切面的Spring"><a href="#面向切面的Spring" class="headerlink" title="面向切面的Spring"></a>面向切面的Spring</h3><p>​    <strong>切面</strong>：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect.</p>
+<p>​    切面的<strong>优点</strong>：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理</p>
+<p>​    切面中包含（通知，切点，连接点</p>
+<p>​    切面的工作被称为<strong>通知</strong>（通知包含5种类型：before,after,after-running.after-throwing,around</p>
+<p>​    <strong>连接点</strong>定义了何时，即应用在执行过程中能够插入切面的一个点</p>
+<p>​    <strong>切点</strong>定义了何处</p>
+<p>Spring 提供了4种类型的Aop支持</p>
+<p>​    1.基于代理的Spring  Aop</p>
+<p>​    2.纯PoJo切面</p>
+<p>​    3.@AspectJ注解驱动的切面</p>
+<p>​    4.注入式AspectJ切面</p>
+<p><strong>编写切点</strong></p>
+<p>1.定义一个Performance接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Performance</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform(..))</span><br><span class="line">    	* 表示返回任意类型</span><br><span class="line">    	concert.Performance 方法所属的类</span><br><span class="line">    	perform 方法</span><br><span class="line">    	(..) 任意参数</span><br><span class="line"> execution 在方法执行时触发 </span><br><span class="line">=============================================</span><br><span class="line"> execution(* concert.Performance.perform(..))&amp;&amp; within(concert.*)</span><br><span class="line">    与操作 </span><br><span class="line">    当concert包下的任意类的方法被调用时</span><br></pre></td></tr></table></figure>
+<p>2.在切点中选择bean(允许在切点表达式中使用bean的id来标志bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform()) <span class="function">and <span class="title">bean</span><span class="params">(<span class="string">'woodstock'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>使用注解创建切面</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 使用@Pointcut注解声明频繁使用的切点表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">performance</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"performance()"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Audience 也可以装配为Spring中的bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是如果只是这样的话，Audience只会是Spring容器的一个bean，即使使用了AspectJ注解也不会被视为切面。</p>
+<p>如果使用JavaConfig的话，可以在配置类的类级别上通过EnableAspectJAutoProxy注解启动自动代理功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span>  <span class="comment">//启用AspectJ自动代理</span></span><br><span class="line"><span class="meta">@ComponentScan</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcertConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;  <span class="comment">//声明 Audience bean</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用环绕通知重新实现Audience切面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">   	<span class="meta">@Around</span>(<span class="string">"performance()"</span>) <span class="comment">//环绕通知方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watchPerformance</span><span class="params">(ProceedingJoinPoint jp)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">            System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">            jp.proceed();</span><br><span class="line">            System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            System.out.pringln(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理通知中的参数，例记录歌曲播放次数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCounter</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer,Integer&gt; trackCounts = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(* soundsystem.CompacDisc.playTrack(int))"</span> + <span class="string">"&amp;&amp; args(trackNumber)"</span>) <span class="comment">//通知playTrack方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trackPlayed</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"trackPlayed(trackNumber)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">countTrack</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> currentCOunt = getPlayCount(trackNumber);</span><br><span class="line">        trackCounts.put(trackNumber,currentCount+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPlayCount</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> trackCounts.containsKey(trackNumber)? trackCounts.get(trackNumber):<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置TrackCount记录每个磁道播放的次数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectAutoProxy</span> <span class="comment">//启用Aspect自动代理</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCountConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompactDisc <span class="title">sgtPeppers</span><span class="params">()</span></span>&#123;</span><br><span class="line">        BlankDisc cd = <span class="keyword">new</span> BlankDisc();</span><br><span class="line">        cd.setTitle(<span class="string">"Sgt.Pepper's Lonely  Hearts Club Band"</span>);</span><br><span class="line">        cd.setArtist(<span class="string">"the beatles"</span>);</span><br><span class="line">        List&lt;String&gt; tracks = <span class="keyword">new</span> ArrayList&lt;String&gt;;</span><br><span class="line">        tracks.add(<span class="string">"Sgt. Pepper's Lonely hearts club band"</span>);</span><br><span class="line">        tracks.add(<span class="string">"fixing a hole"</span>);</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        cd.setTracks(tracks);</span><br><span class="line">        <span class="keyword">return</span> cd;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TrackCounter <span class="title">trackCounter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TrackCounter();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基于xml的暂时不写了，用的比较少</p>
+<p>注入AspectJ切面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="keyword">public</span> aspect CriticAspect&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CriticAspect</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointcut <span class="title">performance</span><span class="params">()</span>: <span class="title">execution</span><span class="params">(* perform(..)</span>)</span>;</span><br><span class="line">    </span><br><span class="line">    afterReturning() : performance()&#123;</span><br><span class="line">        System.out.println(criticismEngine.getCriticism());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> CriticismEngine criticsmEngine;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCriticismEngine</span><span class="params">(CriticismEngine criticismEngine)</span></span>&#123; <span class="comment">//注入CritismEngine</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.criticismEngine = criticismEngine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjwt9qriq0000b0pu259qd7wa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/06/10/spring的高级装配/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">spring的高级装配</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/06/12/spring-aop/">spring-aop</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/04/Spring-1/">Spring-1</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/14/ssm项目无法读取application-properties/">ssm项目无法读取application.properties</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
