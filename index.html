@@ -69,6 +69,163 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-使用ORM持久化数据" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/17/使用ORM持久化数据/" class="article-date">
+  <time datetime="2019-07-17T13:02:14.000Z" itemprop="datePublished">2019-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="使用ORM持久化数据"><a href="#使用ORM持久化数据" class="headerlink" title="使用ORM持久化数据"></a>使用ORM持久化数据</h3><p> 一些特性：1，延迟加载 2，预先抓取 3，级联</p>
+<p>spring对持久化框架的集成附加服务：1，支持Spring声明式事务 2，透明的异常处理 3，线程安全的轻量级模板类  4，DAO支持类 5，资源管理</p>
+<ol>
+<li><p>在Spring中集成Hibernate</p>
+<p>1.1声明Hibernate的Session工厂</p>
+<p>LocalSessionFactoryBean， AnnotationSessionFactoryBean</p>
+<p> 使用 Hibernate Session实现不依赖于Spring的Repository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HibernateSpitterRepository</span><span class="params">(SessionFactory sessionFactory)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sessionFactory = sessionFactory; <span class="comment">//注入SessionFactory</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Session <span class="title">currentSession</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sessionFactory.getCurrentSession();<span class="comment">//从SessionFactory中获取当前Session</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> findAll().size();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">save</span><span class="params">(Spitter spitter)</span></span>&#123;</span><br><span class="line">    Serializable id = currentSession().save(spitter); <span class="comment">//使用当前Session</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Spitter(</span><br><span class="line">    (Long) id,</span><br><span class="line">    spitter.getUsername()，</span><br><span class="line">    spitter.getPassword(),</span><br><span class="line">    spitter.getEmail());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findOne</span><span class="params">(<span class="keyword">long</span> id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession().get(Spitter.class, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findByUsername</span><span class="params">(String username)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class)</span><br><span class="line">        .add(Restriction.eq(<span class="string">"username"</span>,username))</span><br><span class="line">        .list().get(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Spitter&gt; <span class="title">findAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (List&lt;Spitter&gt;) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class).list();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里得先通过@Inject注解让Spring将一个SessionFactory注入到HibernateSpitterRepository的sessionFatory属性中，在currentSession()方法中使用SessionFactory来获取当前事务的Session</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>也使用了@Repository注解，作用：1，构造性注解，能被Spring组件扫描所扫描到，这样不用声明bean   2， 捕获平台相关异常，然后使用Spring统一非检查型异常的形势重新抛出</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjy79c9bu0003cgpuwy5in70y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring和jdbc操作数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/17/spring和jdbc操作数据库/" class="article-date">
+  <time datetime="2019-07-17T13:01:41.000Z" itemprop="datePublished">2019-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Spring和JDBC操作数据库"><a href="#Spring和JDBC操作数据库" class="headerlink" title="Spring和JDBC操作数据库"></a>Spring和JDBC操作数据库</h3><p>1.基于JDBC 驱动的数据源</p>
+<p>​    1.<strong>DriverManagerDataSource</strong> : 每个链接请求时都会返回一个新的连接，没有进行池化管理</p>
+<p>​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题</p>
+<p>​    3.SingleConnectionDataSource:  每个请求返回同一个连接</p>
+<p>使用jdbc操作数据库太繁琐，后使用模板操作</p>
+<p>​    1.<strong>JdbcTemplate</strong></p>
+<p>​    2.NamedParameterJdbcTemplate</p>
+<p>​    3.SimpleJdbcTemplate</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjy79c9by0007cgpuokdycgax" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring-security" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/17/spring-security/" class="article-date">
+  <time datetime="2019-07-17T13:00:04.000Z" itemprop="datePublished">2019-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/17/spring-security/">spring security</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Spring-Security"><a href="#Spring-Security" class="headerlink" title="Spring-Security"></a>Spring-Security</h3><p>​    作用：保护web应用</p>
+<p>通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)  通过重载， 配置user-detail服务）</p>
+<pre><code>为SpringMvc启用Web安全性功能简单配置configure(HttpSecurity) 
+</code></pre><blockquote>
+<p>这个配置指定如何保护http请求，以及客户端认证方案，通过authorizeRequests()和anyRequest().authenticated() 就会进入应用的Http请求都要认证，它也配置security基于表单登录以及Http Basic方式的认证。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvcSecurity</span>  <span class="comment">//还配置了参数解析器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> throw Exception</span>&#123;</span><br><span class="line">    	http.authorizenRequests().anyRequest().authenticated()</span><br><span class="line">        .and().formLogin().and().httpBasic();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>没有重载configure(AuthenticationManagerBuilder)方法，所以没有用户存储支撑认证过程，没有用户存储，就是没有用户，这里所有的请求都要认证，所以没人能够登录成功</p>
+</blockquote>
+<p>添加 Spring Security 配置</p>
+<ol>
+<li>配置用户存储</li>
+<li>指定哪些请求需要认证， 哪些请求不认证，以及权限</li>
+<li>提供自定义登陆页面，替换原来的默认登录页面</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvcSecurity</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBUilder</span></span></span><br><span class="line"><span class="function"><span class="params">                             auth)</span> throw Exception</span>&#123;</span><br><span class="line">        <span class="comment">//启用内存用户存储，适用于测试和开发， 生产中更适合使用数据库保存</span></span><br><span class="line">    	auth.inMemoryAuthentication()  </span><br><span class="line">            .withUser(<span class="string">"user"</span>).password(<span class="string">"password"</span>).roles(<span class="string">"USER"</span>).and()</span><br><span class="line">            .withUser(<span class="string">"admin"</span>).password(<span class="string">"password"</span>).roles(<span class="string">"USER"</span>，<span class="string">"ADMIN"</span>)；</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基于数据库表进行认证, 然后配置一个数据库</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">DataSource dataSource；</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> configure（AuthenticationManagerBuilder auth) <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">	auth.jdbcAuthentication().dataSource(dataSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于密码</p>
+<blockquote>
+<p>passwordEncoder()方法可以接受Security中 passwordEncoder接口的任意实现。</p>
+</blockquote>
+<p>启用HttpBasic认证典型配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity hppt)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    http.formLogin().loginPage(<span class="string">"/login"</span>)</span><br><span class="line">        .and().httpasic().realmName(<span class="string">"Spittr"</span>)</span><br><span class="line">        .and()</span><br><span class="line">        ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjy79c9eb0008cgpu6y7rsvpm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-图解http" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/07/02/图解http/" class="article-date">
@@ -168,7 +325,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjxlsc6bu0002ckpus70oz44d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjy79c9ed0009cgpukkx4upwp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -239,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjxlsc6bs0001ckpuc6210vc1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjy79c9b60000cgpuonxpvrol" class="article-share-link">Share</a>
       
       
     </footer>
@@ -313,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjxlsc6by0005ckpupxj3n15f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjy79c9bv0004cgpuh3tbev06" class="article-share-link">Share</a>
       
       
     </footer>
@@ -373,7 +530,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjxlsc6c40006ckpu0b5jgq7h" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjy79c9bs0002cgpui0pfgll3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +592,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjxlsc6bm0000ckpu6yralhx1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjy79c9br0001cgpu8llab4yx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -481,7 +638,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjxlsc6bx0004ckpus26o9hr1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjy79c9bw0005cgpu4jwhlmw7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -525,7 +682,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjxlsc6bv0003ckpum0h0tm3n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjy79c9bx0006cgpuou61nml7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -566,23 +723,23 @@
       <ul>
         
           <li>
+            <a href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/17/spring-security/">spring security</a>
+          </li>
+        
+          <li>
             <a href="/2019/07/02/图解http/">图解http</a>
           </li>
         
           <li>
             <a href="/2019/06/12/spring-aop/">spring-aop</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/04/Spring-1/">Spring-1</a>
           </li>
         
       </ul>

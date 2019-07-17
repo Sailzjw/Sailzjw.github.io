@@ -5,18 +5,19 @@
   
 
   
-  <title>Archives: 2019/7 | 启航的博客</title>
+  <title>spring和jdbc操作数据库 | 启航的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="hello world">
-<meta property="og:type" content="website">
-<meta property="og:title" content="启航的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2019/07/index.html">
+  <meta name="description" content="Spring和JDBC操作数据库1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring和jdbc操作数据库">
+<meta property="og:url" content="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/index.html">
 <meta property="og:site_name" content="启航的博客">
-<meta property="og:description" content="hello world">
+<meta property="og:description" content="Spring和JDBC操作数据库1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-07-17T13:02:40.206Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="启航的博客">
-<meta name="twitter:description" content="hello world">
+<meta name="twitter:title" content="spring和jdbc操作数据库">
+<meta name="twitter:description" content="Spring和JDBC操作数据库1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连">
   
     <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
   
@@ -67,97 +68,68 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/07/17/使用ORM持久化数据/" class="archive-article-date">
-  <time datetime="2019-07-17T13:02:14.000Z" itemprop="datePublished">7月 17</time>
+        <section id="main"><article id="post-spring和jdbc操作数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/17/spring和jdbc操作数据库/" class="article-date">
+  <time datetime="2019-07-17T13:01:41.000Z" itemprop="datePublished">2019-07-17</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
+    <h1 class="article-title" itemprop="name">
+      spring和jdbc操作数据库
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/07/17/spring和jdbc操作数据库/" class="archive-article-date">
-  <time datetime="2019-07-17T13:01:41.000Z" itemprop="datePublished">7月 17</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
-    </h1>
-  
+        <h3 id="Spring和JDBC操作数据库"><a href="#Spring和JDBC操作数据库" class="headerlink" title="Spring和JDBC操作数据库"></a>Spring和JDBC操作数据库</h3><p>1.基于JDBC 驱动的数据源</p>
+<p>​    1.<strong>DriverManagerDataSource</strong> : 每个链接请求时都会返回一个新的连接，没有进行池化管理</p>
+<p>​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题</p>
+<p>​    3.SingleConnectionDataSource:  每个请求返回同一个连接</p>
+<p>使用jdbc操作数据库太繁琐，后使用模板操作</p>
+<p>​    1.<strong>JdbcTemplate</strong></p>
+<p>​    2.NamedParameterJdbcTemplate</p>
+<p>​    3.SimpleJdbcTemplate</p>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/07/17/spring-security/" class="archive-article-date">
-  <time datetime="2019-07-17T13:00:04.000Z" itemprop="datePublished">7月 17</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/17/spring-security/">spring security</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2019/07/02/图解http/" class="archive-article-date">
-  <time datetime="2019-07-02T12:24:25.000Z" itemprop="datePublished">7月 2</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjy79c9by0007cgpuokdycgax" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/02/图解http/">图解http</a>
-    </h1>
-  
-
-    </header>
+      
+    </footer>
   </div>
-</article>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/17/使用ORM持久化数据/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用ORM持久化数据
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2019/07/17/spring-security/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">spring security</div>
+    </a>
   
+</nav>
 
+  
+</article>
 
 </section>
         
