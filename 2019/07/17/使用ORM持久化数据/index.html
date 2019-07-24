@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="启航的博客">
 <meta property="og:description" content="使用ORM持久化数据 一些特性：1，延迟加载 2，预先抓取 3，级联 spring对持久化框架的集成附加服务：1，支持Spring声明式事务 2，透明的异常处理 3，线程安全的轻量级模板类  4，DAO支持类 5，资源管理  在Spring中集成Hibernate 1.1声明Hibernate的Session工厂 LocalSessionFactoryBean， AnnotationSession">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2019-07-17T13:02:59.084Z">
+<meta property="og:updated_time" content="2019-07-24T11:01:13.179Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用ORM持久化数据">
 <meta name="twitter:description" content="使用ORM持久化数据 一些特性：1，延迟加载 2，预先抓取 3，级联 spring对持久化框架的集成附加服务：1，支持Spring声明式事务 2，透明的异常处理 3，线程安全的轻量级模板类  4，DAO支持类 5，资源管理  在Spring中集成Hibernate 1.1声明Hibernate的Session工厂 LocalSessionFactoryBean， AnnotationSession">
@@ -98,19 +98,24 @@
 <p>LocalSessionFactoryBean， AnnotationSessionFactoryBean</p>
 <p> 使用 Hibernate Session实现不依赖于Spring的Repository</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HibernateSpitterRepository</span><span class="params">(SessionFactory sessionFactory)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sessionFactory = sessionFactory; <span class="comment">//注入SessionFactory</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Session <span class="title">currentSession</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sessionFactory.getCurrentSession();<span class="comment">//从SessionFactory中获取当前Session</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> findAll().size();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">save</span><span class="params">(Spitter spitter)</span></span>&#123;</span><br><span class="line">    Serializable id = currentSession().save(spitter); <span class="comment">//使用当前Session</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Spitter(</span><br><span class="line">    (Long) id,</span><br><span class="line">    spitter.getUsername()，</span><br><span class="line">    spitter.getPassword(),</span><br><span class="line">    spitter.getEmail());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findOne</span><span class="params">(<span class="keyword">long</span> id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession().get(Spitter.class, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findByUsername</span><span class="params">(String username)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class)</span><br><span class="line">        .add(Restriction.eq(<span class="string">"username"</span>,username))</span><br><span class="line">        .list().get(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Spitter&gt; <span class="title">findAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (List&lt;Spitter&gt;) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class).list();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>这里得先通过@Inject注解让Spring将一个SessionFactory注入到HibernateSpitterRepository的sessionFatory属性中，在currentSession()方法中使用SessionFactory来获取当前事务的Session</p>
-</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```也使用了@Repository注解，作用：1，构造性注解，能被Spring组件扫描所扫描到，这样不用声明bean   2， 捕获平台相关异常，然后使用Spring统一非检查型异常的形势重新抛出</span><br></pre></td></tr></table></figure>
+<p>不使用Spring模板的纯Jpa Repository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JpaSpitterRepository</span> <span class="keyword">implements</span> <span class="title">SpitterRspository</span></span>&#123;</span><br><span class="line">   <span class="meta">@PersistenceUnit</span></span><br><span class="line">    <span class="keyword">private</span> EntityManagerFacotory emf; <span class="comment">//注入EntityManagerFactory </span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addSpitter</span><span class="params">(Spitter spitter)</span></span>&#123;</span><br><span class="line">        emf.createEntityManager().persist(spitter)  <span class="comment">//创建并使用EntityManager</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>借助 Spring  Data 实现自动化的Jpa Repository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SpitterRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Spitter</span>, <span class="title">Long</span> &gt;</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p> 配置Spring Data Jpa (xml 方式配置)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">jpa:repositories</span> <span class="attr">base-package</span>=<span class="string">"com.habuma.spittr.db"</span></span></span><br></pre></td></tr></table></figure>
+<p>java 方式配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableJpaRepositories</span>(basePackages=<span class="string">"com.habuma.spittr.db"</span>)   <span class="comment">//关键注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JpaConfigutation</span></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​</p>
+<p>​</p>
 </li>
 </ol>
-<blockquote>
-<p>也使用了@Repository注解，作用：1，构造性注解，能被Spring组件扫描所扫描到，这样不用声明bean   2， 捕获平台相关异常，然后使用Spring统一非检查型异常的形势重新抛出</p>
-</blockquote>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjy79c9bu0003cgpuwy5in70y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjyh55cql000588puqqk5zm2n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -118,6 +123,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2019/07/24/使用NoSql数据库/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          使用NoSql数据库
+        
+      </div>
+    </a>
   
   
     <a href="/2019/07/17/spring和jdbc操作数据库/" id="article-nav-older" class="article-nav-link-wrap">
@@ -159,23 +173,23 @@
       <ul>
         
           <li>
+            <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/数据缓存/">数据缓存</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/使用NoSql数据库/">使用NoSql数据库</a>
+          </li>
+        
+          <li>
             <a href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
           </li>
         
           <li>
             <a href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/17/spring-security/">spring security</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/02/图解http/">图解http</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/12/spring-aop/">spring-aop</a>
           </li>
         
       </ul>

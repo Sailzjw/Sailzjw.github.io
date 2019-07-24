@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>使用NoSql数据库 | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用NoSql数据库使用Spring Data MongoDB（1.通过注解实现对象-文档映射 2.使用MongoTemplate 实现基于模板的数据库访问 3.自动化运行时Repository生成） Data MongoDB```123456789101112131415```java@Configuration@EnableMongoRepositories(&amp;quot;order.db&amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用NoSql数据库">
+<meta property="og:url" content="http://yoursite.com/2019/07/24/使用NoSql数据库/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="使用NoSql数据库使用Spring Data MongoDB（1.通过注解实现对象-文档映射 2.使用MongoTemplate 实现基于模板的数据库访问 3.自动化运行时Repository生成） Data MongoDB```123456789101112131415```java@Configuration@EnableMongoRepositories(&amp;quot;order.db&amp;qu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-07-24T11:03:10.656Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用NoSql数据库">
+<meta name="twitter:description" content="使用NoSql数据库使用Spring Data MongoDB（1.通过注解实现对象-文档映射 2.使用MongoTemplate 实现基于模板的数据库访问 3.自动化运行时Repository生成） Data MongoDB```123456789101112131415```java@Configuration@EnableMongoRepositories(&amp;quot;order.db&amp;qu">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">很高兴遇见你</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-使用NoSql数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/24/使用NoSql数据库/" class="article-date">
+  <time datetime="2019-07-24T11:02:46.000Z" itemprop="datePublished">2019-07-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用NoSql数据库
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="使用NoSql数据库"><a href="#使用NoSql数据库" class="headerlink" title="使用NoSql数据库"></a>使用NoSql数据库</h3><p>使用<strong>Spring Data MongoDB</strong>（1.通过注解实现对象-文档映射 2.使用MongoTemplate 实现基于模板的数据库访问 3.自动化运行时Repository生成）</p>
+<figure class="highlight plain"><figcaption><span>Data MongoDB```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```java</span><br><span class="line">@Configuration</span><br><span class="line">@EnableMongoRepositories(&quot;order.db&quot;)</span><br><span class="line">public class MongoConfig extends AbstractMongoConfiguration&#123;</span><br><span class="line">    @Override</span><br><span class="line">    protected String getDatabaseName()&#123;</span><br><span class="line">        return &quot;OrderDB&quot;; //指定数据库名称</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public Mongo mongo() throws Exception&#123;</span><br><span class="line">        return new MongoClient();  //创建Mongo客户端</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```java</span><br><span class="line">@Autowired</span><br><span class="line">private Enviroment env;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public Mongo mongo() throws Exception &#123;</span><br><span class="line">	MongoCredential credential = MongoCredential.createMongoCRCredential(</span><br><span class="line">    env.getProperty(&quot;mongo.username&quot;),</span><br><span class="line">    &quot;OrderDB&quot;,</span><br><span class="line">    env.getProperty(&quot;mongo.password&quot;).toCharArray())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">xmlns:mongo="http:www.springftameword.org/schema/data/mongo" <span class="comment">&lt;!-- 声明mongo命名空间--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mongo:repositories</span> <span class="attr">base-package</span>=<span class="string">"orders.db"</span>/&gt;</span>  <span class="comment">&lt;!-- 启用Repository 生成功能--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mongo:mongo</span> /&gt;</span> <span class="comment">&lt;!-- 声明 Mongo Client --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--创建MongoTemplate bean--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> = <span class="string">"mongoTemplate"</span>  </span></span><br><span class="line"><span class="tag">      <span class="attr">class</span> = <span class="string">"org.springframework.data.mongodb.core.MongoTemplate"</span></span></span><br><span class="line">      &lt;constructor-arg ref="mongo"/&gt;</span><br><span class="line">	  <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"OrdersDB"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>MongoDB Repository </p>
+<p>完全自定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface OrderRepository extends MongoRepository&lt;Order ,String&gt;&#123;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>Data MongoDB 会自动实现Repository接口，所以会传递性地扩展Repository标记接口```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```java</span><br><span class="line">@Query（&quot;&#123;&apos;customer&apos;:&apos;sailzjw&apos; ,&apos;type&apos;: ?0 &#125;&quot;）</span><br><span class="line">List&lt;Order&gt; findsailOrders(String s);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>属性映射成"?0" 表示type属性应该与查询方法的第0个参数相等，如果有多个参数的话，可以通过 ?1 ?2 方式引用```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">混合自定义</span><br><span class="line"></span><br><span class="line">1定义中间接口</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">public interface orderOperations&#123;</span><br><span class="line">    List&lt;Order&gt; findOrderByType(String t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2 将自定义Repository功能注入到自动生成的Repository中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderRepositoryImpl</span> <span class="keyword">implements</span> <span class="title">OrderPoerations</span></span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MongoOperations mongo; <span class="comment">// 注入MongoOperations </span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Order&gt; <span class="title">findOrdersByType</span><span class="params">(String t)</span></span>&#123;</span><br><span class="line">        String type = t.equals(<span class="string">"NET"</span>) ? <span class="string">"WEB"</span> : t;</span><br><span class="line">        Criteria where = Criteria.where(<span class="string">"type"</span>).is(t);<span class="comment">//创建查询</span></span><br><span class="line">        Query query = Query.query(where);</span><br><span class="line">        <span class="keyword">return</span> mongo.find(query ,Order.class); <span class="comment">//执行查询</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>(也就是MongoTemplate所实现的接口)```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>public interface OrderRepository extends MongoRepository<order ，string>， orderOperations{<br>    …<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">``` 修改OrderRepository 让其实现OrderOperations</span><br></pre></td></tr></table></figure></order></p>
+<p>使用<strong>Redis操作key-value</strong>数据 （HashMap）</p>
+<p> <strong>RedisTemplate</strong> 和 <strong>StringRedisTemplate</strong></p>
+<p>假设已经有RedisConnectionFactory 那么用如下方式构建RedisTemplate</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RedisConnectionFactory cf = ...;</span><br><span class="line">RedisTemplate&lt;String ,Product&gt; redis = <span class="keyword">new</span> RedisTemplate&lt;String ,Product&gt;;</span><br><span class="line">redis.setConnectionFactory(cf);</span><br></pre></td></tr></table></figure>
+<p>如果key-value都是String类型，那么就可以使用StringRedisTemplate来代替RedisTemplate</p>
+<p>StringRedisTemplate有一个接受RedisConnectionFactory的构造器，因此没必要在构建后在调用setConnectionFactory()</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RedisConnectionFactory cf = ...;</span><br><span class="line">StringRedisTemplate redis = <span class="keyword">new</span> StringRedisTemlate(cf)</span><br></pre></td></tr></table></figure>
+<p> 序列化</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjyh55cql000488pu24d1b5eg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/24/数据缓存/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          数据缓存
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/17/使用ORM持久化数据/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用ORM持久化数据</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/数据缓存/">数据缓存</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/使用NoSql数据库/">使用NoSql数据库</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
