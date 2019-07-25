@@ -7,17 +7,17 @@
   
   <title>spring security | 启航的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Spring-Security​    作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（Authentic">
+  <meta name="description" content="作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="spring security">
 <meta property="og:url" content="http://yoursite.com/2019/07/17/spring-security/index.html">
 <meta property="og:site_name" content="启航的博客">
-<meta property="og:description" content="Spring-Security​    作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（Authentic">
+<meta property="og:description" content="作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2019-07-17T13:00:38.505Z">
+<meta property="og:updated_time" content="2019-07-25T11:24:08.892Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring security">
-<meta name="twitter:description" content="Spring-Security​    作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（Authentic">
+<meta name="twitter:description" content="作用：保护web应用 通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)">
   
     <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
   
@@ -90,10 +90,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Spring-Security"><a href="#Spring-Security" class="headerlink" title="Spring-Security"></a>Spring-Security</h3><p>​    作用：保护web应用</p>
+        <p>作用：保护web应用</p>
 <p>通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)  通过重载， 配置user-detail服务）</p>
-<pre><code>为SpringMvc启用Web安全性功能简单配置configure(HttpSecurity) 
-</code></pre><blockquote>
+<p>为SpringMvc启用Web安全性功能简单配置configure(HttpSecurity) </p>
+<blockquote>
 <p>这个配置指定如何保护http请求，以及客户端认证方案，通过authorizeRequests()和anyRequest().authenticated() 就会进入应用的Http请求都要认证，它也配置security基于表单登录以及Http Basic方式的认证。</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvcSecurity</span>  <span class="comment">//还配置了参数解析器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> throw Exception</span>&#123;</span><br><span class="line">    	http.authorizenRequests().anyRequest().authenticated()</span><br><span class="line">        .and().formLogin().and().httpBasic();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjyh55cq6000188pulcazj7vv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjyillk7n0000hspuiynrzgzs" class="article-share-link">Share</a>
       
       
     </footer>
