@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>使用SpringMVC创建REST | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="编写处理REST资源的控制器（替换 soap web 服务，更方便） 以XML、JSON以及其他格式表示资源 使用REST资源 1.REST与RPC不同，RPC是面向服务的，并且关注行为和动作，而REST则是面向资源，强调描述应用程序的事务和名词   rest资源可以使用各种形式进行表述（representional），包括xml，json甚至html；使用rest的时候，我们更应该关注资源的状">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用SpringMVC创建REST">
+<meta property="og:url" content="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="编写处理REST资源的控制器（替换 soap web 服务，更方便） 以XML、JSON以及其他格式表示资源 使用REST资源 1.REST与RPC不同，RPC是面向服务的，并且关注行为和动作，而REST则是面向资源，强调描述应用程序的事务和名词   rest资源可以使用各种形式进行表述（representional），包括xml，json甚至html；使用rest的时候，我们更应该关注资源的状">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-08-06T11:59:20.733Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用SpringMVC创建REST">
+<meta name="twitter:description" content="编写处理REST资源的控制器（替换 soap web 服务，更方便） 以XML、JSON以及其他格式表示资源 使用REST资源 1.REST与RPC不同，RPC是面向服务的，并且关注行为和动作，而REST则是面向资源，强调描述应用程序的事务和名词   rest资源可以使用各种形式进行表述（representional），包括xml，json甚至html；使用rest的时候，我们更应该关注资源的状">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">很高兴遇见你</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-使用SpringMVC创建REST" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/06/使用SpringMVC创建REST/" class="article-date">
+  <time datetime="2019-08-06T11:58:14.000Z" itemprop="datePublished">2019-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用SpringMVC创建REST
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>编写处理REST资源的控制器（替换 soap web 服务，更方便）</li>
+<li>以XML、JSON以及其他格式表示资源</li>
+<li><p>使用REST资源</p>
+<p>1.REST与RPC不同，RPC是面向服务的，并且关注行为和动作，而REST则是面向资源，强调描述应用程序的事务和名词</p>
+</li>
+</ul>
+<p>rest<strong>资源</strong>可以使用各种形式进行<strong>表述</strong>（representional），包括xml，json甚至html；使用rest的时候，我们更应该关注资源的<strong>状态</strong>（State而不是对资源采取的行为;rest资源数据<strong>转移</strong>，以某种形式转移到另一种应用。（其实REST就是将资源的状态以最合适客户端或者服务端的形式从服务端转移到客户端或者相反）注重<strong>事物</strong>不是行为。</p>
+<p>2.Spring支持Rest的方式</p>
+<p>​    1.控制器可以处理所有HTTP方法（主要get,put,post,delete）</p>
+<p>​    2.借助<strong>@PathVariable</strong>注解，控制器能处理参数化的URL（将变量输入当成URL的一部分）</p>
+<p>​    3.借助Spring视图和视图解析器，资源能够以多种方式进行描述，包括将数据模型渲染成XML，JSON，Atom以及RSS的view</p>
+<p>​    4.可以使用ContentNegotiatingViewResolver来选择客户端表述</p>
+<p>​    5.借助<strong>@ResponseBody</strong>注解和各种<strong>HttpMethodConverter</strong>实现，能替换基于视图的渲染方式也可以将传入的HTTP数据转化为传入控制器处理方法的Java对象。</p>
+<p>​    6.借助RestTemplate，Spring应用能更方便地使用Rest资源</p>
+<p>Spring的ContentNegotiatingViewResolver是一个特殊的视图解析器，配置方式如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ViewResolver <span class="title">cnViewResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内容协商的两个步骤</p>
+<p>1.确定请求的媒体类型</p>
+<p>2.找到适合请求媒体的最佳视图</p>
+<p>即使确定所请求媒体类型默认的策略，我们也可以通过设置ContentNegotiationManager去改变他的行为</p>
+<p>有三种方式可以配置ContentNegotiationManager ，推荐后两种</p>
+<ul>
+<li>声明ContentNegotiationManager的bean</li>
+<li>通过ContentNegotiationManagerFactoryBean间接创建bean</li>
+<li>重载WebMvcConfigurerAdapter的configureContentNegotiation()方法</li>
+</ul>
+<p>xml配置最简方式</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"contentNegotiationManager"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.springframework.http.ContentNegotiationManagerFactoryBean"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:defaultContentType</span>=<span class="string">"application/json"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>java配置最简方式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureContentNegotiation</span><span class="params">(ContentNegotiationConfigurer configurer)</span></span>&#123;</span><br><span class="line">    configurer.defaultContentType(MediaType.APPLICATION_JSON)；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面已经有了ContentNegotiationManagerbean,那么现在要将它注入到ContentNegotiatingViewResolver的</p>
+<p>contentNegotiationManager属性中，修改ContentNegotiatingViewResolver的@Bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ViewResolver <span class="title">cnViewResolver</span><span class="params">(ContentNegotiationManager cnm)</span></span>&#123;</span><br><span class="line">    ContentNegotiatingViewResolver cnvr = <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">    cnvr.setContentNegotiationManager(cnm);</span><br><span class="line">    <span class="keyword">return</span> cnvr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Http信息转换器</p>
+<p>使用@ResponseBody注解，这样Spring会知道将返回的对象作为资源发送给客户端（以客户端想要的形式） ，而且DispatcherServlet会考虑到请求中Accept头部信息，并寻找合适的消息转换器</p>
+<p>Jackson默认使用反射</p>
+<p>使用@RequestBody，Spring会查看请求中的Content-Type头部信息，并寻找合适的消息转换器</p>
+<p>Spring4.0之后使用<strong>@RestController</strong>注解，替换@Controller，就不需要每个方法添加@ResponseBody了，使用@RestController注解之后控制器，该方法返回的对象将会通过消息转换机制，产生客户端所需的资源表述</p>
+<p>提供资源之外的其他内容</p>
+<p>@ResponseBody提供了一种很有用的方式，能够将控制器返回的Java对象转换为客户端的资源表述，但是这个只是REST API一部分,还能提供额外的元数据。</p>
+<p>Spring提供了多种方式处理</p>
+<ul>
+<li>@ResponseStatus可以指定状态码</li>
+<li>控制器方法可以返回@ResponseEntity对象，该对象可以包含更多响应相关的元数据</li>
+<li>异常处理器能够应对错误场景，这样处理器方法就能关注正常状况（@ExceptionHandler）</li>
+</ul>
+<p>编写REST客户端</p>
+<p>举个栗子，我们借助FaceBook的Graph API来获取某人的FaceBook基本信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Profile <span class="title">fetchFaceBookProfile</span><span class="params">(String id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">      	<span class="comment">//创建客户端</span></span><br><span class="line">        HttpClient client = HttpClient.createDefault();</span><br><span class="line">        <span class="comment">//创建请求</span></span><br><span class="line">        HttpGet request = <span class="keyword">new</span> HttpGet(<span class="string">"http://graph.facebook.com/"</span>+id);</span><br><span class="line">        request.setHeader(<span class="string">"Accept"</span>,<span class="string">"application/json"</span>);</span><br><span class="line">        <span class="comment">//执行请求</span></span><br><span class="line">        HttpResponse response = client.execute(request);</span><br><span class="line">        HttpEntity entity = response.getEntity();</span><br><span class="line">        <span class="comment">//将响应映射为对象</span></span><br><span class="line">        ObjectMapper mapper = <span class="keyword">new</span> ObjectMappe();</span><br><span class="line">        <span class="keyword">return</span> mapper.readValue(entity.getContent(),Profile.class);</span><br><span class="line">    &#125;<span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>了解RestTemplate//待续</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjyzrub200008kspugi14tavh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/06/Spring消息/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spring消息
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/06/使用远程服务/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用远程服务</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/06/Spring消息/">Spring消息</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用远程服务/">使用远程服务</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/24/数据缓存/">数据缓存</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

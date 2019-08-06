@@ -69,6 +69,281 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Spring消息" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/06/Spring消息/" class="article-date">
+  <time datetime="2019-08-06T11:58:54.000Z" itemprop="datePublished">2019-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/06/Spring消息/">Spring消息</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>异步消息简介</li>
+<li>基于JMS的消息功能</li>
+<li>使用Spring和AMQP发送消息</li>
+<li>消息驱动的POJO</li>
+</ul>
+<p>1.发送消息</p>
+<p>​    有两种通用的目的地：队列和主题，分别是点对点模型和发布/订阅模型</p>
+<p>异步消息的优点</p>
+<p>​    1.无需等待</p>
+<p>​    2.面向消息和解耦</p>
+<p>​    3.位置独立</p>
+<p>​    4.确保投递</p>
+<p>2.使用JMS发送消息</p>
+<p>​    使用ActiveMQ</p>
+<p>​    1.创建连接工厂</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.apache.activemq.spring.ActiveMqConnectionFactory"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>ActiveMQConnectionFactory 会假设ActiveMQ代理监听localhost的61616端口，这样我们可以如下设置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.apache.activemq.spring.ActiveMqConnectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:brokeURL</span>=<span class="string">"tcp://localhost:61616"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>也可以通过如下方式声明</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">amq:connectionFactory</span> <span class="attr">id</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">                       <span class="attr">brokerURL</span>=<span class="string">"tcp：//localhost:61616"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​        2.声明ActiveMQ消息目的地</p>
+<p>​        如下定义了一个队列</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"queue"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.apache.activemq.command.ActiveMQQueue"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_</span>=<span class="string">"spitter.queue"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>​        如下定义了一个ActiveMQ主题</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"topic"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.apache.activemq.command.ActiveMQTopic"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_</span>=<span class="string">"spitter.queue"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code>用amq方式声明
+</code></pre><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">amq:</span> <span class="attr">queue</span> <span class="attr">id</span>=<span class="string">"spittleQueue"</span> <span class="attr">physicalName</span>=<span class="string">"spittle.alert.queue"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">amq:</span> <span class="attr">topic</span> <span class="attr">id</span>=<span class="string">"spottleTpoic"</span> <span class="attr">phtsicalName</span>=<span class="string">"spittle.alert.topic"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>不管是哪种类型，都是通过physicalName属性指定消息通道的名称</p>
+<p>使用JMS模板</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.springframework.jms.core.JmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_-ref</span>=<span class="string">"connectionFactory"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>发送消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlertServiceImpl</span> <span class="keyword">implements</span> <span class="title">AlertService</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> JmsOperations jmsIperations;</span><br><span class="line">    <span class="comment">//注入jms模板</span></span><br><span class="line">    <span class="meta">@Autowired</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AlertServiceImpl</span><span class="params">(JmsOperations jmsOperations)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.jmsOperations = jmsOperations;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendSpittleAlert</span><span class="params">(<span class="keyword">final</span> Spittle spittle)</span></span>&#123;</span><br><span class="line">        jmsOperations.send(<span class="comment">//发送消息</span></span><br><span class="line">            <span class="string">"spittle.slert.queue"</span>,<span class="comment">//指定目的地</span></span><br><span class="line">            <span class="keyword">new</span> MessageCreator()&#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Meaasge <span class="title">createMessage</span><span class="params">(Session session)</span></span></span><br><span class="line"><span class="function">               	 throw JMSException</span>&#123;</span><br><span class="line">                <span class="keyword">throw</span> session.createObjectMessage(spittle);<span class="comment">//创建消息</span></span><br><span class="line">            &#125;</span><br><span class="line">        	&#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置默认的目的地</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> = <span class="string">"jmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span> = <span class="string">"org.springframeword.jms.core.JmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_-ref</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:defaultDestinationName</span>=<span class="string">"spittle.alert.queue"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面只是配了一个目的地名称，并没有说明你处理的目的地是什么类型，那么可以将之前的创建的队列或主题的目的地bean装配进来</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> = <span class="string">"jmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span> = <span class="string">"org.springframeword.jms.core.JmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_-ref</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:defaultDestination-ref</span>=<span class="string">"spittleTopic"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>默认JMSTemplate在convertAndSend()方法中会使用 SImpleMessage  Converter。通过将消息转换器声明为bean，并注入到JMStemplate的messageConverter属性，可以重写，如果想用json，可以声名一个MappingJacksonMessageConverter bean</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"messageConverter"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.springframeword.jms.support.converter</span></span></span><br><span class="line"><span class="tag"><span class="string">             --&gt; MappingJacsonMessageConverter"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注入到JmsTemplate中</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"jmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.springframework.jms.core.JmsTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">c:_-ref</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:defaultDestinationName</span>=<span class="string">"spittle.alert.queue"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:messageConverter-ref</span>=<span class="string">"messageConverter"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>接收消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Spittle <span class="title">receiveSpittleAlert</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        <span class="comment">//接收消息</span></span><br><span class="line">        ObjectMessage receivedMessage = (ObjectMessage) jmsOperations.receive();</span><br><span class="line">        <span class="comment">//获得对象</span></span><br><span class="line">        <span class="keyword">return</span> (Spittle) receivedMessage.getObject();</span><br><span class="line">    &#125;<span class="keyword">catch</span>(JMSException jmsException)&#123;</span><br><span class="line">        <span class="keyword">throw</span> JmsUtils.convertJmsAccessExceptiom(jmsException);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring MDP异步接收和处理消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpittleAlertHandler</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleSpittleAlert</span><span class="params">(Spittle spittle)</span></span>&#123;<span class="comment">//处理方法</span></span><br><span class="line">        <span class="comment">//...implementation goes here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>handleSpittleAlert是个纯粹的POJO，可以在Spring中配置消息监听器使他获取消息接收能力，配置如下</p>
+<p>1.将处理器声明为bean</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"spittleHandler"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"com.habuma.spittr.alerts.SpittleAlertHandler"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>2.把SpittleAlertHandler 声明为消息监听器</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">jms:listener-container</span> <span class="attr">connection-factory</span>=<span class="string">"connectionFactory"</span> &gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">jms:listener</span> <span class="attr">destination</span>=<span class="string">"spitter.alert.queue"</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">ref</span>=<span class="string">"spittleHandler"</span> <span class="attr">method</span>=<span class="string">"handleSpittleAlert"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">jms:listener-container</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>使用基于消息的RPC 17.2</p>
+<p>使用AMQP实现消息功能</p>
+<p>AMQP在消息生产者和传递信息的队列之间引入了一种简介的机制Exchange。生产者和消息队列之间实现了解耦，Exchange这不仅仅是穿透，根据算法的不同，可能会使用消息的routing key 和/ 或者参数， 将Exchange 和队列的binding的routing key和参数进行对比</p>
+<table>
+<thead>
+<tr>
+<th>Exchange类型</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct</td>
+<td>消息的routing key与binding的routing key直接匹配的话，消息会路由到该队列上</td>
+</tr>
+<tr>
+<td>Topic</td>
+<td>消息的routing key与binding的routing key符合通配符匹配，消息会路由到该队列上</td>
+</tr>
+<tr>
+<td>Headers</td>
+<td>消息参数表中的头信息和值都与binding参数表中匹配，消息会路由到该队列上</td>
+</tr>
+<tr>
+<td>Fanout</td>
+<td>不管消息的routing key和参数表的头信息/值是什么， 消息将会路由到所有队列上</td>
+</tr>
+</tbody>
+</table>
+<p>配置RabbitMq</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">connection-factory</span> <span class="attr">id</span>=<span class="string">"connectionFactory"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改连接信息</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">connection-factory</span> <span class="attr">id</span>=<span class="string">"connectionfactory"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">host</span>=<span class="string">"$&#123;rabbitmq.host&#125;"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">port</span>=<span class="string">"$&#123;rabbitmq.port&#125;"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">username</span>=<span class="string">"$&#123;rabbitmq.username&#125;"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">password</span>=<span class="string">"$&#123;rabbitmq.password&#125;"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>配置RabbitTemplate </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"rabbitTemplate"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">connection-factory</span>=<span class="string">"connectinFactory"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>使用RabbitTemplate来发送消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AlertServiceImpl</span> <span class="keyword">implements</span> <span class="title">AlertService</span></span>&#123;</span><br><span class="line">    priivate RabbitTemplate rabbit;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AlertServiceImpl</span> <span class="params">(RabbitTemplate rabbit)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rabbit = rabbit;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendSpittleAlert</span><span class="params">(Spittle spittle)</span></span>&#123;</span><br><span class="line">        rabbit.convertAndSend(<span class="string">"spittle.alert.exchange"</span>,</span><br><span class="line">                             <span class="string">"spittle.alerts"</span>,</span><br><span class="line">                             spittle);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RabbitTemplate接收消息</p>
+<p>借助receive()方法可以从队列中获取一个Message对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Message message = rabbit.receive(<span class="string">"spittle.alert.queue"</span>);</span><br></pre></td></tr></table></figure>
+<p>还可以配置默认消息队列</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span> <span class="attr">id</span> = <span class="string">"rabbitTemplate"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">connection-factory</span>=<span class="string">"connectionFactory"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">exchange</span>=<span class="string">"spittle.alert.exchange"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">routing-key</span>=<span class="string">"spittle.alerts"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">queue</span>=<span class="string">"spittle.alert.queue"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Spittle spittle = (Spittle) rabbit.receiveAndConvert(<span class="string">"spittle.alert.queue"</span>);</span><br></pre></td></tr></table></figure>
+<p>receiveAndConvert()方法或使用和sendAndConvert() 相同的消息转换器，将Message转换成原始的类型</p>
+<p>调用这两个方法都会立即返回结果，如果队列中没等待的消息，那结果就是null,这时候需要我们来管理轮询（polling）以及必要的线程，实现队列的监控</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/06/Spring消息/" data-id="cjyzrub1e0001kspucsoimf61" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用SpringMVC创建REST" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/06/使用SpringMVC创建REST/" class="article-date">
+  <time datetime="2019-08-06T11:58:14.000Z" itemprop="datePublished">2019-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>编写处理REST资源的控制器（替换 soap web 服务，更方便）</li>
+<li>以XML、JSON以及其他格式表示资源</li>
+<li><p>使用REST资源</p>
+<p>1.REST与RPC不同，RPC是面向服务的，并且关注行为和动作，而REST则是面向资源，强调描述应用程序的事务和名词</p>
+</li>
+</ul>
+<p>rest<strong>资源</strong>可以使用各种形式进行<strong>表述</strong>（representional），包括xml，json甚至html；使用rest的时候，我们更应该关注资源的<strong>状态</strong>（State而不是对资源采取的行为;rest资源数据<strong>转移</strong>，以某种形式转移到另一种应用。（其实REST就是将资源的状态以最合适客户端或者服务端的形式从服务端转移到客户端或者相反）注重<strong>事物</strong>不是行为。</p>
+<p>2.Spring支持Rest的方式</p>
+<p>​    1.控制器可以处理所有HTTP方法（主要get,put,post,delete）</p>
+<p>​    2.借助<strong>@PathVariable</strong>注解，控制器能处理参数化的URL（将变量输入当成URL的一部分）</p>
+<p>​    3.借助Spring视图和视图解析器，资源能够以多种方式进行描述，包括将数据模型渲染成XML，JSON，Atom以及RSS的view</p>
+<p>​    4.可以使用ContentNegotiatingViewResolver来选择客户端表述</p>
+<p>​    5.借助<strong>@ResponseBody</strong>注解和各种<strong>HttpMethodConverter</strong>实现，能替换基于视图的渲染方式也可以将传入的HTTP数据转化为传入控制器处理方法的Java对象。</p>
+<p>​    6.借助RestTemplate，Spring应用能更方便地使用Rest资源</p>
+<p>Spring的ContentNegotiatingViewResolver是一个特殊的视图解析器，配置方式如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ViewResolver <span class="title">cnViewResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内容协商的两个步骤</p>
+<p>1.确定请求的媒体类型</p>
+<p>2.找到适合请求媒体的最佳视图</p>
+<p>即使确定所请求媒体类型默认的策略，我们也可以通过设置ContentNegotiationManager去改变他的行为</p>
+<p>有三种方式可以配置ContentNegotiationManager ，推荐后两种</p>
+<ul>
+<li>声明ContentNegotiationManager的bean</li>
+<li>通过ContentNegotiationManagerFactoryBean间接创建bean</li>
+<li>重载WebMvcConfigurerAdapter的configureContentNegotiation()方法</li>
+</ul>
+<p>xml配置最简方式</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"contentNegotiationManager"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"org.springframework.http.ContentNegotiationManagerFactoryBean"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">p:defaultContentType</span>=<span class="string">"application/json"</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>java配置最简方式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureContentNegotiation</span><span class="params">(ContentNegotiationConfigurer configurer)</span></span>&#123;</span><br><span class="line">    configurer.defaultContentType(MediaType.APPLICATION_JSON)；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面已经有了ContentNegotiationManagerbean,那么现在要将它注入到ContentNegotiatingViewResolver的</p>
+<p>contentNegotiationManager属性中，修改ContentNegotiatingViewResolver的@Bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ViewResolver <span class="title">cnViewResolver</span><span class="params">(ContentNegotiationManager cnm)</span></span>&#123;</span><br><span class="line">    ContentNegotiatingViewResolver cnvr = <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">    cnvr.setContentNegotiationManager(cnm);</span><br><span class="line">    <span class="keyword">return</span> cnvr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Http信息转换器</p>
+<p>使用@ResponseBody注解，这样Spring会知道将返回的对象作为资源发送给客户端（以客户端想要的形式） ，而且DispatcherServlet会考虑到请求中Accept头部信息，并寻找合适的消息转换器</p>
+<p>Jackson默认使用反射</p>
+<p>使用@RequestBody，Spring会查看请求中的Content-Type头部信息，并寻找合适的消息转换器</p>
+<p>Spring4.0之后使用<strong>@RestController</strong>注解，替换@Controller，就不需要每个方法添加@ResponseBody了，使用@RestController注解之后控制器，该方法返回的对象将会通过消息转换机制，产生客户端所需的资源表述</p>
+<p>提供资源之外的其他内容</p>
+<p>@ResponseBody提供了一种很有用的方式，能够将控制器返回的Java对象转换为客户端的资源表述，但是这个只是REST API一部分,还能提供额外的元数据。</p>
+<p>Spring提供了多种方式处理</p>
+<ul>
+<li>@ResponseStatus可以指定状态码</li>
+<li>控制器方法可以返回@ResponseEntity对象，该对象可以包含更多响应相关的元数据</li>
+<li>异常处理器能够应对错误场景，这样处理器方法就能关注正常状况（@ExceptionHandler）</li>
+</ul>
+<p>编写REST客户端</p>
+<p>举个栗子，我们借助FaceBook的Graph API来获取某人的FaceBook基本信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Profile <span class="title">fetchFaceBookProfile</span><span class="params">(String id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">      	<span class="comment">//创建客户端</span></span><br><span class="line">        HttpClient client = HttpClient.createDefault();</span><br><span class="line">        <span class="comment">//创建请求</span></span><br><span class="line">        HttpGet request = <span class="keyword">new</span> HttpGet(<span class="string">"http://graph.facebook.com/"</span>+id);</span><br><span class="line">        request.setHeader(<span class="string">"Accept"</span>,<span class="string">"application/json"</span>);</span><br><span class="line">        <span class="comment">//执行请求</span></span><br><span class="line">        HttpResponse response = client.execute(request);</span><br><span class="line">        HttpEntity entity = response.getEntity();</span><br><span class="line">        <span class="comment">//将响应映射为对象</span></span><br><span class="line">        ObjectMapper mapper = <span class="keyword">new</span> ObjectMappe();</span><br><span class="line">        <span class="keyword">return</span> mapper.readValue(entity.getContent(),Profile.class);</span><br><span class="line">    &#125;<span class="keyword">catch</span>(IOException e)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>了解RestTemplate//待续</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjyzrub200008kspugi14tavh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-使用远程服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/06/使用远程服务/" class="article-date">
+  <time datetime="2019-08-06T11:54:46.000Z" itemprop="datePublished">2019-08-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/06/使用远程服务/">使用远程服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>访问和发布RMI服务</li>
+<li>使用Hessian和Burlap服务</li>
+<li>使用Spring的Hppt invoker</li>
+<li>使用Spring开发Web服务</li>
+</ul>
+<p>spitter应用的服务层并使用RmiServiceExporter将服务发布为RMI服务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SpitterService</span></span>&#123;</span><br><span class="line">    <span class="function">Spitter get <span class="title">Spitter</span><span class="params">(String username)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RmiServiceExporter <span class="title">rmiExporter</span><span class="params">(SpitterService spitterService)</span></span>&#123;</span><br><span class="line">   RmiServiceExporter rmiExporter = <span class="keyword">new</span> RmiServiceExporter();</span><br><span class="line">    <span class="comment">//RmiServiceExporter将POJO包装到服务适配器中，并将服务适配器绑定到RMI注册表中，从而将POJO转换为RMI服务</span></span><br><span class="line">    rmiExporter.setService(spitterService);</span><br><span class="line">    rmiExporter.setServiceName(<span class="string">"SpitterService"</span>);</span><br><span class="line">    rmiExporter.setServiceInterface(SpitterService.class);</span><br><span class="line">    <span class="comment">//默认情况下，RmiServiceExporter会尝试绑定到本地机器1099端口上的RMI注册表，可以通过RegistryHost和ResitryPort来指定别的注册表</span></span><br><span class="line">    rmiExporter.setRegistryHost(<span class="string">"rmi.spitter.com"</span>);</span><br><span class="line">    rmiExporter.setRegistryPort(<span class="number">1199</span>);</span><br><span class="line">    <span class="keyword">return</span> rmiExporter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Spring的RMiProxyFactoryBean是一个工厂bean，可以为RMI服务创建代理，只需配置Bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> RmiProxyFactoryBean <span class="title">spitterService</span><span class="params">()</span></span>&#123;</span><br><span class="line">    RmiProxyFactoryBean rmiProxy = <span class="keyword">new</span> RmiProxyFactoryBean();</span><br><span class="line">    rmiProxy.setServiceUrl(<span class="string">"rmi://localhost/SpitterService"</span>);</span><br><span class="line">    rmiProxy.setServiceInterface(SpitterService.class);</span><br><span class="line">    <span class="keyword">return</span> rmiProxy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Spring的HttpInvoker,能执行基于Http的远程调用，并使用java的序列化机制</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> HttpInvokerServiceExporter <span class="title">httpExportSpitterService</span><span class="params">(SpitterService service)</span></span>&#123;</span><br><span class="line">    HttpInvokerServiceExporter exporter= <span class="keyword">new</span> HttpInvokerServiceExporter();</span><br><span class="line">    expoerter.setService();</span><br><span class="line">    expoerter.setServiceInterface(SpitterService.class);</span><br><span class="line">    <span class="keyword">return</span> exporter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为HttpInvokerServiceExporter是个SpringMvc控制器，我们需要建立一个URL处理器，映射Http url到对应的服务上，就像Hession和Burlap导出器所做的一样。</p>
+<p>HttpInvokerServiceExporter的工作方式是（请求进入之后，有DispatcherServlet分发到HttpInvokerServiceExporter，再调用serviceImpl</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> HandlerMapping <span class="title">httpInvokerMapping</span><span class="params">()</span></span>&#123;</span><br><span class="line">    SimpleUrlHandlerMapping mapping = <span class="keyword">new</span> SimpleUrlHandlerMapping();</span><br><span class="line">    Properties mappings = <span class="keyword">new</span> Properties();</span><br><span class="line">    mapping.setProperty(<span class="string">"/spitter.service"</span>,<span class="string">"httpExportedSpitterService"</span>);</span><br><span class="line">    mapping.setMapping(mappings);</span><br><span class="line">    <span class="keyword">return</span> mapping;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>映射设置xml</p>
+<p>发布和使用web服务（使用jaxWsPortProxyFactory）</p>
+<p>客户端调用service方法，JaxWsPortProxyFactoryBean 生成代理，代理传递soap消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> JaxWsPorrtProxyFactoryBean spitterService&#123;</span><br><span class="line">	JaxWsPorrtProxyFactoryBean proxy = <span class="keyword">new</span> JaxWsPorrtProxyFactoryBean();</span><br><span class="line">    proxy.setWsdlDocument(<span class="string">"http://8080/services/Spitter?wsdl"</span>);</span><br><span class="line">    proxy.setServiceName(<span class="string">"spitterService"</span>);</span><br><span class="line">    proxy.setPortName(<span class="string">"spitterServiceHttpPort"</span>);</span><br><span class="line">    proxy.setInterface(<span class="string">"SpitterService.class"</span>);</span><br><span class="line">    proxy.setNamespaceUri(<span class="string">"http://spitter.com"</span>);</span><br><span class="line">    <span class="keyword">return</span> proxy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>减少使用远程服务。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/06/使用远程服务/" data-id="cjyzrub230009kspuu9uzrqpf" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-保护方法应用" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/07/24/保护方法应用/" class="article-date">
@@ -127,7 +402,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjyillk830007hspuu33atj2t" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjyzrub2z000ekspuo6jpyetz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -194,7 +469,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjyillk830006hspuf3tfhb3d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjyzrub32000fkspul1dfxaxp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -258,7 +533,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjyillk830004hspuyx46r2j0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjyzrub2a000ckspudqdabwwn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -316,7 +591,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjyillk830005hspud7we8kf5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjyzrub27000bkspukr6ne4yh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -360,7 +635,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjyillk830003hspu8hmp12ee" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjyzrub1o0004kspu69pohe3w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -421,7 +696,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjyillk7n0000hspuiynrzgzs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjyzrub1e0003ksputtudzzwk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -530,212 +805,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjyillk8i000bhspu697z971o" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-aop" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/12/spring-aop/" class="article-date">
-  <time datetime="2019-06-12T13:26:26.000Z" itemprop="datePublished">2019-06-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/12/spring-aop/">spring-aop</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="面向切面的Spring"><a href="#面向切面的Spring" class="headerlink" title="面向切面的Spring"></a>面向切面的Spring</h3><p>​    <strong>切面</strong>：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect.</p>
-<p>​    切面的<strong>优点</strong>：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理</p>
-<p>​    切面中包含（通知，切点，连接点</p>
-<p>​    切面的工作被称为<strong>通知</strong>（通知包含5种类型：before,after,after-running.after-throwing,around</p>
-<p>​    <strong>连接点</strong>定义了何时，即应用在执行过程中能够插入切面的一个点</p>
-<p>​    <strong>切点</strong>定义了何处</p>
-<p>Spring 提供了4种类型的Aop支持</p>
-<p>​    1.基于代理的Spring  Aop</p>
-<p>​    2.纯PoJo切面</p>
-<p>​    3.@AspectJ注解驱动的切面</p>
-<p>​    4.注入式AspectJ切面</p>
-<p><strong>编写切点</strong></p>
-<p>1.定义一个Performance接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Performance</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform(..))</span><br><span class="line">    	* 表示返回任意类型</span><br><span class="line">    	concert.Performance 方法所属的类</span><br><span class="line">    	perform 方法</span><br><span class="line">    	(..) 任意参数</span><br><span class="line"> execution 在方法执行时触发 </span><br><span class="line">=============================================</span><br><span class="line"> execution(* concert.Performance.perform(..))&amp;&amp; within(concert.*)</span><br><span class="line">    与操作 </span><br><span class="line">    当concert包下的任意类的方法被调用时</span><br></pre></td></tr></table></figure>
-<p>2.在切点中选择bean(允许在切点表达式中使用bean的id来标志bean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform()) <span class="function">and <span class="title">bean</span><span class="params">(<span class="string">'woodstock'</span>)</span></span></span><br></pre></td></tr></table></figure>
-<p><strong>使用注解创建切面</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 使用@Pointcut注解声明频繁使用的切点表达式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">performance</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"performance()"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Audience 也可以装配为Spring中的bean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是如果只是这样的话，Audience只会是Spring容器的一个bean，即使使用了AspectJ注解也不会被视为切面。</p>
-<p>如果使用JavaConfig的话，可以在配置类的类级别上通过EnableAspectJAutoProxy注解启动自动代理功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span>  <span class="comment">//启用AspectJ自动代理</span></span><br><span class="line"><span class="meta">@ComponentScan</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcertConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;  <span class="comment">//声明 Audience bean</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用环绕通知重新实现Audience切面</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">   	<span class="meta">@Around</span>(<span class="string">"performance()"</span>) <span class="comment">//环绕通知方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watchPerformance</span><span class="params">(ProceedingJoinPoint jp)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">            System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">            jp.proceed();</span><br><span class="line">            System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            System.out.pringln(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>处理通知中的参数，例记录歌曲播放次数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCounter</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer,Integer&gt; trackCounts = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(* soundsystem.CompacDisc.playTrack(int))"</span> + <span class="string">"&amp;&amp; args(trackNumber)"</span>) <span class="comment">//通知playTrack方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trackPlayed</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"trackPlayed(trackNumber)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">countTrack</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> currentCOunt = getPlayCount(trackNumber);</span><br><span class="line">        trackCounts.put(trackNumber,currentCount+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPlayCount</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> trackCounts.containsKey(trackNumber)? trackCounts.get(trackNumber):<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置TrackCount记录每个磁道播放的次数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectAutoProxy</span> <span class="comment">//启用Aspect自动代理</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCountConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompactDisc <span class="title">sgtPeppers</span><span class="params">()</span></span>&#123;</span><br><span class="line">        BlankDisc cd = <span class="keyword">new</span> BlankDisc();</span><br><span class="line">        cd.setTitle(<span class="string">"Sgt.Pepper's Lonely  Hearts Club Band"</span>);</span><br><span class="line">        cd.setArtist(<span class="string">"the beatles"</span>);</span><br><span class="line">        List&lt;String&gt; tracks = <span class="keyword">new</span> ArrayList&lt;String&gt;;</span><br><span class="line">        tracks.add(<span class="string">"Sgt. Pepper's Lonely hearts club band"</span>);</span><br><span class="line">        tracks.add(<span class="string">"fixing a hole"</span>);</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        cd.setTracks(tracks);</span><br><span class="line">        <span class="keyword">return</span> cd;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TrackCounter <span class="title">trackCounter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TrackCounter();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>基于xml的暂时不写了，用的比较少</p>
-<p>注入AspectJ切面</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="keyword">public</span> aspect CriticAspect&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CriticAspect</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointcut <span class="title">performance</span><span class="params">()</span>: <span class="title">execution</span><span class="params">(* perform(..)</span>)</span>;</span><br><span class="line">    </span><br><span class="line">    afterReturning() : performance()&#123;</span><br><span class="line">        System.out.println(criticismEngine.getCriticism());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> CriticismEngine criticsmEngine;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCriticismEngine</span><span class="params">(CriticismEngine criticismEngine)</span></span>&#123; <span class="comment">//注入CritismEngine</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.criticismEngine = criticismEngine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjyillk7n0002hspuu12awfv9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring的高级装配" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/10/spring的高级装配/" class="article-date">
-  <time datetime="2019-06-10T13:47:54.000Z" itemprop="datePublished">2019-06-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>高级装配**</p>
-<p> 1.Spring profile:配置profile bean 可以解决环境迁移问题</p>
-<p>​    举个栗子(数据库的配置</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(destroyMethod=<span class="string">"shutdown"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">        .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">        .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">        .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    解读：这里创建一个类型为javax.sql.DataSource的bean，使用EmbeddedDatabaseBuilder会搭建一个嵌入式的Hypersonic数据库，模式定义在了schema.sql, 测试数据是通过test-data.sql加载。</p>
-<p>​    当你在开发环境中运行集成测试或者启动应用进行手动测试时，这个DataSource是很有用的，他使得数据库处于一个给定的状态。</p>
-<p>​    但是在生产环境中，更喜欢用JNDI从容器中去一个DataSource。如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span>  DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">    jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">    jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">    <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    QA环境又是一种DataSource配置方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>（destroyMethod = <span class="string">"close"</span>）</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">	BasicDataSource dataSource = <span class="keyword">new</span> BasicDataSource();</span><br><span class="line">	dataSource.setUrl(<span class="string">"jdbc:h2:tcp://dbserver/~/test"</span>);</span><br><span class="line">	dataSource.setDriverClassName(<span class="string">"org.h2.Driver"</span>);</span><br><span class="line">	dataSource.setUserName(<span class="string">"sa"</span>);</span><br><span class="line">	dataSource.setPassword(<span class="string">"password"</span>);</span><br><span class="line">	dataSource.setInitIalSize(<span class="number">20</span>);</span><br><span class="line">	dataSource.setMaxActive(<span class="number">30</span>);</span><br><span class="line">	<span class="keyword">return</span> dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>配置profile bean</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"dev"</span>)<span class="comment">//被写到类上，这时bean 只有在dev profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"prod"</span>)<span class="comment">//被写到类上，这时bean 只有在prod profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Spring3.2之后@Profile注解可以基于方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="meta">@Prodile</span>(<span class="string">"dev"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">embeddedDataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Profile</span>(<span class="string">"prod"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意：这里所有的bean，只有在对应的profile被激活时才会创建</p>
-<p><strong>激活profile</strong></p>
-<p>​    需要两个独立的属性，1.spring.profiles.active和spring.profiles.dev</p>
-<p>​    多种方式设置这两个属性：1.DispatcherServlet 的初始化参数 2.web应用的上下文参数</p>
-<p>3.JNDI条目 4.环境变量 5.jvm的系统属性 6.在集成测试类上，使用@ActiveProfiles注解设置</p>
-<p><strong>条件化配置bean</strong></p>
-<p>​    使用@Conditional注解</p>
-<p><strong>处理自动装配的歧义</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDessert</span><span class="params">(Dessert dessert)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.dessert = dessert;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cake</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
-<p> 这里使用@Component注解，组件扫描时发现并创建为Spring应用上下文里面的bean,然后自动装配setDessert()中的Dessert参数时，没有唯一的值可以选。所以会抛出NoUniqueBeanDefinitionException;</p>
-<p>  解决办法：@Primary，配合@Component注解这样就可以确定首选bean，不会产生冲突</p>
-<p>​             @Qualifier，可以限定自动装配到更小的范围</p>
-<h3 id><a href="#" class="headerlink" title=" "></a> </h3><p><strong>bean的作用域</strong></p>
-<p>​    默认Spring应用上下文中所有bean都是以<strong>单例</strong>形式创建的，即一个bean无论被注入到其他bean多少次都是同一个实例。</p>
-<pre><code>让对象保持无状态并且在应用中反复使用并不合理。
-</code></pre><p>​    如果使用的类是易变的，那么重用就不安全。</p>
-<p>基于作用创建bean：大致分为4种</p>
-<p>​    1.singleton单例:在整个应用中，只创建bean的一个实例</p>
-<p>​    2.protoType 原型：每次注入或者通过Spring应用上下文获取的时候，都会创建一个新的bean实例</p>
-<p>​    3.session会话：在web应用中，为每个会话创建一个bean实例</p>
-<p>​    4.request请求：在web中，为每个请求创建一个bean实例</p>
-<p>@Scope注解搭配@Component 和@Bean</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjyillk830009hspu3b8bj7b2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-reentrantLock和synchronized" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/06/04/reentrantLock和synchronized/" class="article-date">
-  <time datetime="2019-06-04T14:21:46.000Z" itemprop="datePublished">2019-06-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Synchronized：优化关注点(1.CAS 2.java对象头</p>
-<p>​    首相多线程（a,b）操作时，如果a 已经修改了主内存的值（向主内存写入值），那么当a释放锁（向b隐式发送消息），b获得锁时会先从主内存获取该值（从主线程读取值）。</p>
-<p>​    使用锁时，线程获取锁是一种<strong>悲观锁策略</strong>，即假设每次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时会阻塞其他线程获取该锁。</p>
-<p>​    CAS:是一种<strong>乐观锁</strong>，假设所有线程访问共享资源时不会出现阻塞的状态，（使用cas进行鉴别线程是否发生冲突，出现冲突就重试当前操作直到没有冲突为止。（1.这样会有个问题，错了就会一直重试，影响性能  （2.aba问题，检测旧值没有变化，即a-&gt;b-&gt;a ，解决办法就是添加版本号，变成 1a-&gt;2b-&gt;3c (3.只能对一个共享变量操作时能保证原子性，如果是多个共享变量进行操作，那么cas就不能保证其原子性，解决办法：对象整合多个共享变量，以保证其原子性</p>
-<p>​    cas可以理解为（v,o,n） v是内存地址存放的实际值，o是预期值（旧值），n是更新的新值, vo相同也就是说旧值和内存中的实际的值相同，表明值没被其他线程改过，如果vo不同，那么o已经被修改，则n值也不能赋值给v。</p>
-<p>​    偏向锁：(优点：枷锁和解锁不需要额外消耗  （缺点：如果线程之前存在锁竞争，会带来锁撤销的消耗 (使用场景：适用于只有一个线程访问的同步块场景</p>
-<p>​    轻量级锁：(优点:竞争的线程不会阻塞，提高了程序的响应速度 （缺点：如果一直得不到竞争线程，自旋会消耗cpu （追求响应时间，同步块执行速度非常快</p>
-<p>​    重量级锁：（优点：线程竞争不适用自选，不会消耗cpu  （缺点：线程阻塞，响应时间缓慢  （使用场景追求吞吐量，同步快执行速度较长</p>
-<p>​        </p>
-<p>ReentratLock：1.重入性的实现原理 2.公平锁和非公平锁</p>
-<p>​    1.要实现重入性要解决的两个问题：（1.线程获取锁的时候，如果已经获取所得线程是当前线程的话则直接再次获取成功  (2、由于锁会被获取n次，那么只有锁在被释放同样n次之后，该锁才是完全释放成功。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> nonfairTryAcquire（<span class="keyword">int</span> acquire）&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="comment">//1 如果该锁未被任何线程占有，该锁能被当前线程获取</span></span><br><span class="line">    <span class="keyword">if</span>(c ==<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(compareAndSetState(<span class="number">0</span>,acquires))&#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.若被占有，检查占有线程是否是当前线程</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(current == getExclusiveOwnerThread)&#123;</span><br><span class="line">        <span class="comment">//3.再次获取，计数加1</span></span><br><span class="line">        <span class="keyword">int</span> nextc = c+acquires;</span><br><span class="line">        <span class="keyword">if</span>(next&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximun lock count exceeded"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    为了支持重入性，第二步增加了处理逻辑，如果该锁已经被线程所占有了，会继续检查占有线程是否为当前线程，如果是的话，同步状态加1返回true，表示可以再次获取成功。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> release)</span></span>&#123;</span><br><span class="line">    <span class="comment">//1.同步状态减1</span></span><br><span class="line">    <span class="keyword">int</span> c = getState() -release;</span><br><span class="line">    <span class="keyword">if</span>（Thread.currentThread() != getExclusiveOwnerThread())&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(c ==<span class="number">0</span> )&#123;</span><br><span class="line">        <span class="comment">//2.只有当同步状态为0 ，才能被释放 ，返回true</span></span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">		setExclusiveOwnerThread(<span class="keyword">null</span>);    </span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//3.锁未被完全释放，返回false</span></span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​    重入锁的释放必须得等到同步状态为0时锁才算成功释放，否则锁仍未释放。如果锁被获取n次，释放了n-1次，该锁未完全释放返回false，只有被释放n次才算成功释放，返回true。</p>
-<p>​    2.公平锁和非公平锁</p>
-<p>​    如果锁是公平的那么对于获取锁而言，那么锁获取顺序就应该符合请求上的绝对时间顺序（即fifo，先进先出</p>
-<p>​    </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//和nonfairTryAcquire不同的地方就是多了个</span></span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>公平vs 非公平</p>
-<p>​    公平锁每次获取到锁为同步队列中的第一个节点，<strong>保证请求资源时间上的绝对顺序</strong>，而非公平锁有可能刚释放锁的线程下次继续获取该锁，则有可能导致其他线程永远无法获取到锁。</p>
-<p>​    公平锁为了保证时间上的绝对顺序，需要频繁的上下文切换，而非公平锁会降低一定的上下文切换，降低性能开销。因此，ReentrantLock默认选择的是非公平锁，则是为了减少一部分上下文切换，<strong>保证了系统更大的吞吐量</strong>。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjyillk7n0001hspulxlc5u0t" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjyzrub2c000dkspu45ses7te" class="article-share-link">Share</a>
       
       
     </footer>
@@ -768,7 +838,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
     </div>
   </div>
 
@@ -781,23 +851,23 @@
       <ul>
         
           <li>
+            <a href="/2019/08/06/Spring消息/">Spring消息</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用远程服务/">使用远程服务</a>
+          </li>
+        
+          <li>
             <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
           </li>
         
           <li>
             <a href="/2019/07/24/数据缓存/">数据缓存</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/24/使用NoSql数据库/">使用NoSql数据库</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
           </li>
         
       </ul>

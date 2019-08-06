@@ -69,6 +69,211 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-spring-aop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/12/spring-aop/" class="article-date">
+  <time datetime="2019-06-12T13:26:26.000Z" itemprop="datePublished">2019-06-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/12/spring-aop/">spring-aop</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="面向切面的Spring"><a href="#面向切面的Spring" class="headerlink" title="面向切面的Spring"></a>面向切面的Spring</h3><p>​    <strong>切面</strong>：横切关注点可以被模块化为特殊的类，这些类被称为切面aspect.</p>
+<p>​    切面的<strong>优点</strong>：首先，每个关注点都集中于一个地方，而不是分散到多处代码中；其次，服务模块更简洁，他只包含要关注点的代码，次要的都被转义到切面中(常用于日志记录，性能统计，安全控制，事务处理，异常处理</p>
+<p>​    切面中包含（通知，切点，连接点</p>
+<p>​    切面的工作被称为<strong>通知</strong>（通知包含5种类型：before,after,after-running.after-throwing,around</p>
+<p>​    <strong>连接点</strong>定义了何时，即应用在执行过程中能够插入切面的一个点</p>
+<p>​    <strong>切点</strong>定义了何处</p>
+<p>Spring 提供了4种类型的Aop支持</p>
+<p>​    1.基于代理的Spring  Aop</p>
+<p>​    2.纯PoJo切面</p>
+<p>​    3.@AspectJ注解驱动的切面</p>
+<p>​    4.注入式AspectJ切面</p>
+<p><strong>编写切点</strong></p>
+<p>1.定义一个Performance接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Performance</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform(..))</span><br><span class="line">    	* 表示返回任意类型</span><br><span class="line">    	concert.Performance 方法所属的类</span><br><span class="line">    	perform 方法</span><br><span class="line">    	(..) 任意参数</span><br><span class="line"> execution 在方法执行时触发 </span><br><span class="line">=============================================</span><br><span class="line"> execution(* concert.Performance.perform(..))&amp;&amp; within(concert.*)</span><br><span class="line">    与操作 </span><br><span class="line">    当concert包下的任意类的方法被调用时</span><br></pre></td></tr></table></figure>
+<p>2.在切点中选择bean(允许在切点表达式中使用bean的id来标志bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execution(* concert.Performance.perform()) <span class="function">and <span class="title">bean</span><span class="params">(<span class="string">'woodstock'</span>)</span></span></span><br></pre></td></tr></table></figure>
+<p><strong>使用注解创建切面</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 使用@Pointcut注解声明频繁使用的切点表达式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">performance</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">silenceCellPhones</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之前</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterReturning</span>(<span class="string">"performance()"</span>)<span class="comment">//表演之后</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applause</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@AfterThrowing</span>(<span class="string">"performance()"</span>)<span class="comment">//表演失败</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span></span>&#123;</span><br><span class="line">    	System.out.println(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Audience 也可以装配为Spring中的bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是如果只是这样的话，Audience只会是Spring容器的一个bean，即使使用了AspectJ注解也不会被视为切面。</p>
+<p>如果使用JavaConfig的话，可以在配置类的类级别上通过EnableAspectJAutoProxy注解启动自动代理功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span>  <span class="comment">//启用AspectJ自动代理</span></span><br><span class="line"><span class="meta">@ComponentScan</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcertConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Audience <span class="title">audience</span><span class="params">()</span></span>&#123;  <span class="comment">//声明 Audience bean</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Audience();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用环绕通知重新实现Audience切面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span></span>&#123;</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(** concert.Performance.perform(..))"</span>)<span class="comment">//定义命名的切点</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">   	<span class="meta">@Around</span>(<span class="string">"performance()"</span>) <span class="comment">//环绕通知方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watchPerformance</span><span class="params">(ProceedingJoinPoint jp)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"silencing cell phones"</span>);</span><br><span class="line">            System.out.println(<span class="string">"taking seats"</span>);</span><br><span class="line">            jp.proceed();</span><br><span class="line">            System.out.println(<span class="string">"clap clap clap"</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span>(Throwable e)&#123;</span><br><span class="line">            System.out.pringln(<span class="string">"Demanding a refund"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理通知中的参数，例记录歌曲播放次数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCounter</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer,Integer&gt; trackCounts = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">    <span class="meta">@Pointcut</span>(<span class="string">"execution(* soundsystem.CompacDisc.playTrack(int))"</span> + <span class="string">"&amp;&amp; args(trackNumber)"</span>) <span class="comment">//通知playTrack方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trackPlayed</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"trackPlayed(trackNumber)"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">countTrack</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> currentCOunt = getPlayCount(trackNumber);</span><br><span class="line">        trackCounts.put(trackNumber,currentCount+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPlayCount</span><span class="params">(<span class="keyword">int</span> trackNumber)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> trackCounts.containsKey(trackNumber)? trackCounts.get(trackNumber):<span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置TrackCount记录每个磁道播放的次数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectAutoProxy</span> <span class="comment">//启用Aspect自动代理</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrackCountConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CompactDisc <span class="title">sgtPeppers</span><span class="params">()</span></span>&#123;</span><br><span class="line">        BlankDisc cd = <span class="keyword">new</span> BlankDisc();</span><br><span class="line">        cd.setTitle(<span class="string">"Sgt.Pepper's Lonely  Hearts Club Band"</span>);</span><br><span class="line">        cd.setArtist(<span class="string">"the beatles"</span>);</span><br><span class="line">        List&lt;String&gt; tracks = <span class="keyword">new</span> ArrayList&lt;String&gt;;</span><br><span class="line">        tracks.add(<span class="string">"Sgt. Pepper's Lonely hearts club band"</span>);</span><br><span class="line">        tracks.add(<span class="string">"fixing a hole"</span>);</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">        cd.setTracks(tracks);</span><br><span class="line">        <span class="keyword">return</span> cd;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TrackCounter <span class="title">trackCounter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> TrackCounter();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基于xml的暂时不写了，用的比较少</p>
+<p>注入AspectJ切面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> concert;</span><br><span class="line"><span class="keyword">public</span> aspect CriticAspect&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CriticAspect</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function">pointcut <span class="title">performance</span><span class="params">()</span>: <span class="title">execution</span><span class="params">(* perform(..)</span>)</span>;</span><br><span class="line">    </span><br><span class="line">    afterReturning() : performance()&#123;</span><br><span class="line">        System.out.println(criticismEngine.getCriticism());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> CriticismEngine criticsmEngine;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCriticismEngine</span><span class="params">(CriticismEngine criticismEngine)</span></span>&#123; <span class="comment">//注入CritismEngine</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.criticismEngine = criticismEngine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjyzrub1o0005kspu4y4j8xdu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-spring的高级装配" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/10/spring的高级装配/" class="article-date">
+  <time datetime="2019-06-10T13:47:54.000Z" itemprop="datePublished">2019-06-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/10/spring的高级装配/">spring的高级装配</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>高级装配**</p>
+<p> 1.Spring profile:配置profile bean 可以解决环境迁移问题</p>
+<p>​    举个栗子(数据库的配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>(destroyMethod=<span class="string">"shutdown"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">        .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">        .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">        .build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    解读：这里创建一个类型为javax.sql.DataSource的bean，使用EmbeddedDatabaseBuilder会搭建一个嵌入式的Hypersonic数据库，模式定义在了schema.sql, 测试数据是通过test-data.sql加载。</p>
+<p>​    当你在开发环境中运行集成测试或者启动应用进行手动测试时，这个DataSource是很有用的，他使得数据库处于一个给定的状态。</p>
+<p>​    但是在生产环境中，更喜欢用JNDI从容器中去一个DataSource。如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span>  DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">    JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">    jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">    jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">    jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">    <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    QA环境又是一种DataSource配置方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span>（destroyMethod = <span class="string">"close"</span>）</span><br><span class="line"><span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">	BasicDataSource dataSource = <span class="keyword">new</span> BasicDataSource();</span><br><span class="line">	dataSource.setUrl(<span class="string">"jdbc:h2:tcp://dbserver/~/test"</span>);</span><br><span class="line">	dataSource.setDriverClassName(<span class="string">"org.h2.Driver"</span>);</span><br><span class="line">	dataSource.setUserName(<span class="string">"sa"</span>);</span><br><span class="line">	dataSource.setPassword(<span class="string">"password"</span>);</span><br><span class="line">	dataSource.setInitIalSize(<span class="number">20</span>);</span><br><span class="line">	dataSource.setMaxActive(<span class="number">30</span>);</span><br><span class="line">	<span class="keyword">return</span> dataSource;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置profile bean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"dev"</span>)<span class="comment">//被写到类上，这时bean 只有在dev profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"prod"</span>)<span class="comment">//被写到类上，这时bean 只有在prod profile被激活时才会创建</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class <span class="title">DevelopmentProfileConfig</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring3.2之后@Profile注解可以基于方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfig</span></span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(destroyMethod = <span class="string">"shutdown"</span>)</span><br><span class="line">    <span class="meta">@Prodile</span>(<span class="string">"dev"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">embeddedDataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> EmbeddedDatabaseBuilder()</span><br><span class="line">             .setType(EmbeddedDatabaseType.H2)</span><br><span class="line">             .addScript(<span class="string">"classpath:schema.sql"</span>)</span><br><span class="line">             .addScript(<span class="string">"classpath:test-data.sql"</span>)</span><br><span class="line">             .build();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Profile</span>(<span class="string">"prod"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">         JndiObjectFactoryBean jndiObjectFactoryBean = <span class="keyword">new</span> JndiObjectFactoryBean();</span><br><span class="line">   		 jndiObjectFactoryBean.setJndiBean(<span class="string">"jdbc/myDS"</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setResourceRef(<span class="keyword">true</span>);</span><br><span class="line">   		 jndiObjectFactoryBean.setProxyInterface(javax.sql.DataSource.class);</span><br><span class="line">   		 <span class="keyword">return</span> (DataSource) jndiObjectFactoryBean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：这里所有的bean，只有在对应的profile被激活时才会创建</p>
+<p><strong>激活profile</strong></p>
+<p>​    需要两个独立的属性，1.spring.profiles.active和spring.profiles.dev</p>
+<p>​    多种方式设置这两个属性：1.DispatcherServlet 的初始化参数 2.web应用的上下文参数</p>
+<p>3.JNDI条目 4.环境变量 5.jvm的系统属性 6.在集成测试类上，使用@ActiveProfiles注解设置</p>
+<p><strong>条件化配置bean</strong></p>
+<p>​    使用@Conditional注解</p>
+<p><strong>处理自动装配的歧义</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDessert</span><span class="params">(Dessert dessert)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.dessert = dessert;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cake</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cookie</span> <span class="keyword">implements</span> <span class="title">Dessert</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p> 这里使用@Component注解，组件扫描时发现并创建为Spring应用上下文里面的bean,然后自动装配setDessert()中的Dessert参数时，没有唯一的值可以选。所以会抛出NoUniqueBeanDefinitionException;</p>
+<p>  解决办法：@Primary，配合@Component注解这样就可以确定首选bean，不会产生冲突</p>
+<p>​             @Qualifier，可以限定自动装配到更小的范围</p>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3><p><strong>bean的作用域</strong></p>
+<p>​    默认Spring应用上下文中所有bean都是以<strong>单例</strong>形式创建的，即一个bean无论被注入到其他bean多少次都是同一个实例。</p>
+<pre><code>让对象保持无状态并且在应用中反复使用并不合理。
+</code></pre><p>​    如果使用的类是易变的，那么重用就不安全。</p>
+<p>基于作用创建bean：大致分为4种</p>
+<p>​    1.singleton单例:在整个应用中，只创建bean的一个实例</p>
+<p>​    2.protoType 原型：每次注入或者通过Spring应用上下文获取的时候，都会创建一个新的bean实例</p>
+<p>​    3.session会话：在web应用中，为每个会话创建一个bean实例</p>
+<p>​    4.request请求：在web中，为每个请求创建一个bean实例</p>
+<p>@Scope注解搭配@Component 和@Bean</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjyzrub1o0007kspuvww9qdm3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-reentrantLock和synchronized" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/04/reentrantLock和synchronized/" class="article-date">
+  <time datetime="2019-06-04T14:21:46.000Z" itemprop="datePublished">2019-06-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/04/reentrantLock和synchronized/">reentrantLock和synchronized</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Synchronized：优化关注点(1.CAS 2.java对象头</p>
+<p>​    首相多线程（a,b）操作时，如果a 已经修改了主内存的值（向主内存写入值），那么当a释放锁（向b隐式发送消息），b获得锁时会先从主内存获取该值（从主线程读取值）。</p>
+<p>​    使用锁时，线程获取锁是一种<strong>悲观锁策略</strong>，即假设每次执行临界区代码都会产生冲突，所以当前线程获取到锁的时候同时会阻塞其他线程获取该锁。</p>
+<p>​    CAS:是一种<strong>乐观锁</strong>，假设所有线程访问共享资源时不会出现阻塞的状态，（使用cas进行鉴别线程是否发生冲突，出现冲突就重试当前操作直到没有冲突为止。（1.这样会有个问题，错了就会一直重试，影响性能  （2.aba问题，检测旧值没有变化，即a-&gt;b-&gt;a ，解决办法就是添加版本号，变成 1a-&gt;2b-&gt;3c (3.只能对一个共享变量操作时能保证原子性，如果是多个共享变量进行操作，那么cas就不能保证其原子性，解决办法：对象整合多个共享变量，以保证其原子性</p>
+<p>​    cas可以理解为（v,o,n） v是内存地址存放的实际值，o是预期值（旧值），n是更新的新值, vo相同也就是说旧值和内存中的实际的值相同，表明值没被其他线程改过，如果vo不同，那么o已经被修改，则n值也不能赋值给v。</p>
+<p>​    偏向锁：(优点：枷锁和解锁不需要额外消耗  （缺点：如果线程之前存在锁竞争，会带来锁撤销的消耗 (使用场景：适用于只有一个线程访问的同步块场景</p>
+<p>​    轻量级锁：(优点:竞争的线程不会阻塞，提高了程序的响应速度 （缺点：如果一直得不到竞争线程，自旋会消耗cpu （追求响应时间，同步块执行速度非常快</p>
+<p>​    重量级锁：（优点：线程竞争不适用自选，不会消耗cpu  （缺点：线程阻塞，响应时间缓慢  （使用场景追求吞吐量，同步快执行速度较长</p>
+<p>​        </p>
+<p>ReentratLock：1.重入性的实现原理 2.公平锁和非公平锁</p>
+<p>​    1.要实现重入性要解决的两个问题：（1.线程获取锁的时候，如果已经获取所得线程是当前线程的话则直接再次获取成功  (2、由于锁会被获取n次，那么只有锁在被释放同样n次之后，该锁才是完全释放成功。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> nonfairTryAcquire（<span class="keyword">int</span> acquire）&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="comment">//1 如果该锁未被任何线程占有，该锁能被当前线程获取</span></span><br><span class="line">    <span class="keyword">if</span>(c ==<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(compareAndSetState(<span class="number">0</span>,acquires))&#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.若被占有，检查占有线程是否是当前线程</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(current == getExclusiveOwnerThread)&#123;</span><br><span class="line">        <span class="comment">//3.再次获取，计数加1</span></span><br><span class="line">        <span class="keyword">int</span> nextc = c+acquires;</span><br><span class="line">        <span class="keyword">if</span>(next&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximun lock count exceeded"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    为了支持重入性，第二步增加了处理逻辑，如果该锁已经被线程所占有了，会继续检查占有线程是否为当前线程，如果是的话，同步状态加1返回true，表示可以再次获取成功。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> release)</span></span>&#123;</span><br><span class="line">    <span class="comment">//1.同步状态减1</span></span><br><span class="line">    <span class="keyword">int</span> c = getState() -release;</span><br><span class="line">    <span class="keyword">if</span>（Thread.currentThread() != getExclusiveOwnerThread())&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalMonitorStateException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">boolean</span> free = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(c ==<span class="number">0</span> )&#123;</span><br><span class="line">        <span class="comment">//2.只有当同步状态为0 ，才能被释放 ，返回true</span></span><br><span class="line">        free = <span class="keyword">true</span>;</span><br><span class="line">		setExclusiveOwnerThread(<span class="keyword">null</span>);    </span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//3.锁未被完全释放，返回false</span></span><br><span class="line">    setState(c);</span><br><span class="line">    <span class="keyword">return</span> free;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    重入锁的释放必须得等到同步状态为0时锁才算成功释放，否则锁仍未释放。如果锁被获取n次，释放了n-1次，该锁未完全释放返回false，只有被释放n次才算成功释放，返回true。</p>
+<p>​    2.公平锁和非公平锁</p>
+<p>​    如果锁是公平的那么对于获取锁而言，那么锁获取顺序就应该符合请求上的绝对时间顺序（即fifo，先进先出</p>
+<p>​    </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> c = getState();</span><br><span class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//和nonfairTryAcquire不同的地方就是多了个</span></span><br><span class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp;</span><br><span class="line">            compareAndSetState(<span class="number">0</span>, acquires)) &#123;</span><br><span class="line">            setExclusiveOwnerThread(current);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;</span><br><span class="line">        <span class="keyword">int</span> nextc = c + acquires;</span><br><span class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</span><br><span class="line">        setState(nextc);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>公平vs 非公平</p>
+<p>​    公平锁每次获取到锁为同步队列中的第一个节点，<strong>保证请求资源时间上的绝对顺序</strong>，而非公平锁有可能刚释放锁的线程下次继续获取该锁，则有可能导致其他线程永远无法获取到锁。</p>
+<p>​    公平锁为了保证时间上的绝对顺序，需要频繁的上下文切换，而非公平锁会降低一定的上下文切换，降低性能开销。因此，ReentrantLock默认选择的是非公平锁，则是为了减少一部分上下文切换，<strong>保证了系统更大的吞吐量</strong>。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjyzrub140000kspupqderblc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Spring-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/04/Spring-1/" class="article-date">
@@ -121,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjyillk83000ahspu8ewwfdn6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjyzrub1e0002kspun8u1muy5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -167,7 +372,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjyillk830008hspuf31cvifr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjyzrub1o0006kspu3v5c1som" class="article-share-link">Share</a>
       
       
     </footer>
@@ -211,7 +416,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjyillk8i000chspu887kcx64" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjyzrub25000akspuvum2r8q1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -244,7 +449,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
     </div>
   </div>
 
@@ -257,23 +462,23 @@
       <ul>
         
           <li>
+            <a href="/2019/08/06/Spring消息/">Spring消息</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用远程服务/">使用远程服务</a>
+          </li>
+        
+          <li>
             <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
           </li>
         
           <li>
             <a href="/2019/07/24/数据缓存/">数据缓存</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/24/使用NoSql数据库/">使用NoSql数据库</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
           </li>
         
       </ul>
