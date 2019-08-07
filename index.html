@@ -69,6 +69,99 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-使用WebSocket和STMOP实现消息功能" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/" class="article-date">
+  <time datetime="2019-08-07T11:05:39.000Z" itemprop="datePublished">2019-08-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>在浏览器和服务器之间发送消息</li>
+<li>在SpringMVC控制器中处理消息</li>
+<li>为目标用户发送消息</li>
+</ul>
+<p>Spring4.0为WebSocket通信提供了支持（包括发送和接收消息的低层级API ，高级API，发消息的模板，支持SockJS，用来解决浏览器端度无端以及代理不支持WebSocket的问题</p>
+<p>使用低层级API</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MacroHandler</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketHandler</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(MacroHandler.class);</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">handleTextMessage</span><span class="params">( WebSocketSession session , //处理文本消息</span></span></span><br><span class="line"><span class="function"><span class="params">         TextMessage message)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">       logger.info(<span class="string">"Received message:"</span> + message.getPayload());</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);<span class="comment">//模拟消息延时</span></span><br><span class="line">        session.sendMessage(<span class="keyword">new</span> TextMessage(<span class="string">"Sail"</span>)); <span class="comment">//发送文本信息</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了处理文本等信息，还有链接的建立和关闭</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterConnectionEstablished</span><span class="params">(WebSocketSession session)</span></span></span><br><span class="line"><span class="function">    throw Exception</span>&#123;</span><br><span class="line">    logger.info(<span class="string">"connection established"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterConnectionClosed</span><span class="params">(WebSocketSession session, CloseStatus status)</span></span></span><br><span class="line"><span class="function">	theow Exception</span>&#123;</span><br><span class="line">    logger.info(<span class="string">"Connection closed . status: "</span> + status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>已经有了消息处理器类，在配置类上使用@EnableWebSocket，并实现WebSocketConfigurer<br>接口 ， java方式配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableWebSocket</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketConfig</span> <span class="keyword">implements</span> <span class="title">WebSocketConfigurer</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandler</span><span class="params">(WebSocketHandlerRegistry registry)</span></span>&#123;</span><br><span class="line">        registry.addHandler(macroHandler(), <span class="string">"//marco"</span>);<span class="comment">//将MacroHandr映射到“/macro"</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">   	<span class="function"><span class="keyword">public</span> MarcoHandler <span class="title">marcoHandler</span><span class="params">()</span></span>&#123;<span class="comment">//声明MarcoHandler bean</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MarcoHandler();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>借助webSocket命名空间以XML方式配置WebSocket</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">websocket:handlers</span>&gt;</span> </span><br><span class="line">	<span class="tag">&lt;<span class="name">websocket:mapping</span> <span class="attr">handler</span> =<span class="string">"marcoHandler"</span> <span class="attr">path</span>=<span class="string">"/marco"</span> /&gt;</span><span class="comment">&lt;!--将MarcoHandle 映射到/marco --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">websocket:handlers</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"marcoHandler"</span> </span></span><br><span class="line"><span class="tag">      <span class="attr">class</span>=<span class="string">"marcopolo.MarcoHandler"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>应对不支持WebSocket的场景</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerWebSocketHandler</span><span class="params">(WebSocketHandlerRegistry registry)</span></span>&#123;</span><br><span class="line">      registry.addHandler(macroHandler(), <span class="string">"//marco"</span>).withSockJS();<span class="comment">//将MacroHandr映射到“/macro" ,并启用SockJS</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>使用STOMP消息</p>
+<p>Java配置启用基于代理的Web消息功能(@EnableWebSocketMessageBroker注解能够在<br>WebSocket之上启用STOMP )</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebSocketMessageBroker</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebSocketStompConfig</span> <span class="keyword">extends</span> <span class="title">AbstractWebSocketMessageBrokerConfigurer</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStompEndpoints</span><span class="params">(StompEndPointRegistry registry)</span></span>&#123;</span><br><span class="line">        registry.addEndPoint(<span class="string">"/marcopolo"</span>).withSocketJS();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureMessageBroker</span><span class="params">(MessageBrokerRegistry registry)</span></span>&#123;</span><br><span class="line">        registry.enableSimpleBroker(<span class="string">"/queue"</span>,<span class="string">"/topic"</span>);</span><br><span class="line">        registry.setApplicationDestinationPrefixes(<span class="string">"/app"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>处理客户端的STOMP消息  <strong>@MessageMapping</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarcoController</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(MarcoController.class);</span><br><span class="line">    <span class="meta">@MessageMapping</span>(<span class="string">"/marco"</span>)  <span class="comment">//关键注解 </span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleShout</span><span class="params">(Shout incoming)</span></span>&#123;   <span class="comment">// 处理发往/app/marco目的地的消息</span></span><br><span class="line">        logger.info(<span class="string">"Received message: "</span> + incoming.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为不是HTTP，所以无法使用HttpMessageConverter实现将负载转为Shout对象</p>
+<p>有如下几个消息转换器可以处理Message</p>
+<table>
+<thead>
+<tr>
+<th>消息转换器</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ByteArrayMessageConverter</td>
+<td>实现MIME类型为“application/octetstream”的消息与byte[]之间的相互转换</td>
+</tr>
+<tr>
+<td>MappingJackson2MessageConverter</td>
+<td>实现MIME类型为“application/json”的消息与Java对象之间的相互转换</td>
+</tr>
+<tr>
+<td>StringMessageConverter</td>
+<td>实现MIME类型为“text/plain”的消息与String之间的相互转换</td>
+</tr>
+</tbody>
+</table>
+<p>处理订阅<strong>@SubscribeMapping</strong> </p>
+<p>发送消息到客户端</p>
+<ol>
+<li>作为处理消息或定于的附带结果</li>
+<li>使用消息模板</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MessageMapping</span>(<span class="string">"/marco"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Shout <span class="title">handleShout</span><span class="params">(Shout incoming)</span></span>&#123;</span><br><span class="line">    Shout outgoing = <span class="keyword">new</span> Shout();</span><br><span class="line">    outgoing.setMessage(<span class="string">"Polo"</span>);</span><br><span class="line">    <span class="keyword">return</span> outgoing;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>默认帧所发往的目的地会与触发处理器方法的目的地相同 ，可以添加<strong>@SendTo</strong>注解重载目的地</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MessageMapping</span>(<span class="string">"/marco"</span>)</span><br><span class="line"><span class="meta">@SendTo</span>(<span class="string">"/topic/shout"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Shout <span class="title">handleShout</span><span class="params">(Shout incoming)</span></span>&#123;</span><br><span class="line">    Shout outgoing = <span class="keyword">new</span> Shout();</span><br><span class="line">    outgoing.setMessage(<span class="string">"polo"</span>);</span><br><span class="line">    <span class="keyword">return</span> outgoing;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>@SendToUser</strong> 发送给订阅客户</p>
+<p><strong>@MessageExceptionHandler</strong>能处理消息方法中的异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MessageExceptionHandler</span>(SpittleException,<span class="class"><span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span>  <span class="title">SpittleException</span> <span class="title">handleException</span>(<span class="title">SpittleException</span> <span class="title">e</span>)</span>&#123;</span><br><span class="line">    logger.error(<span class="string">"Error handling message: "</span> + e.getMessage());</span><br><span class="line">    <span class="keyword">return</span> e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/07/使用WebSocket和STMOP实现消息功能/" data-id="cjz15dss600097opuua0j2m64" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Spring消息" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/08/06/Spring消息/" class="article-date">
@@ -191,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/Spring消息/" data-id="cjyzrub1e0001kspucsoimf61" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/Spring消息/" data-id="cjz15dss600027opu9leazpdk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -278,7 +371,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjyzrub200008kspugi14tavh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjz15dss6000a7opughbenmkv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -334,7 +427,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/使用远程服务/" data-id="cjyzrub230009kspuu9uzrqpf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/使用远程服务/" data-id="cjz15dssl000c7opu0kq92chc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -402,7 +495,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjyzrub2z000ekspuo6jpyetz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjz15dssl000g7opul401d7m1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -469,7 +562,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjyzrub32000fkspul1dfxaxp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjz15dssl000f7opuv6rd03k2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -533,7 +626,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjyzrub2a000ckspudqdabwwn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjz15dssl000d7opu9q1fouxb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -591,7 +684,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjyzrub27000bkspukr6ne4yh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjz15dssl000b7opul8n77d4n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -635,7 +728,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjyzrub1o0004kspu69pohe3w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjz15dss600057opuo82a0lto" class="article-share-link">Share</a>
       
       
     </footer>
@@ -696,116 +789,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjyzrub1e0003ksputtudzzwk" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-图解http" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/07/02/图解http/" class="article-date">
-  <time datetime="2019-07-02T12:24:25.000Z" itemprop="datePublished">2019-07-02</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/02/图解http/">图解http</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-了解web以及网络基础"><a href="#1-了解web以及网络基础" class="headerlink" title="1.了解web以及网络基础"></a>1.了解web以及网络基础</h3><p>​    1.<strong>tcp/ip 分层</strong>：1.应用层 http  2.传输层  tcp 3. 网络层 ip  4.链路层 以太网</p>
-<p>​    客户端 经过4次封装 –&gt; 服务端 经过4 解析  获取客户的请求</p>
-<p>​    2.与http密切相关的协议:tcp,ip,dns</p>
-<p>​    ip 属于网络层，ip协议用来把各种数据包传送给对方，<strong>ip地址</strong>指明了节点被分配到的地址， <strong>mac地址</strong>是指网卡所属的固定地址</p>
-<p>​    ip地址可以和mac地址进行配对</p>
-<p>​    使用<strong>arp</strong>协议凭借mac地址进行通信，通信双方是通过多台计算机和网络设备中转才连接到对方，在中转时，会利用下一站的mac 地址找到下一个中转目标</p>
-<p>​    tcp 属于传输层，用来提供可靠的字节流服务。确认数据是否送达对方（常见的是 三次握手</p>
-<p>​    dns属于应用层，提供域名到ip地址间的解析服务。</p>
-<p>​    3.uri 和 url   url是uri（标志符的子集</p>
-<h3 id="2-简单的http协议"><a href="#2-简单的http协议" class="headerlink" title="2.简单的http协议"></a>2.简单的http协议</h3><p>​    1.http协议用于客户端和服务端之间的通信</p>
-<p>​    请求报文是由请求方法，请求uri ，协议版本，可选的请求首部字段和内容实体构成的。    </p>
-<p>​    响应报文是由协议版本，状态码，状态码原因短语，响应首部字段和实体构成。</p>
-<p>​    2.http是不保存状态的协议，即无状态协议</p>
-<p>​    但是这样会导致业务处理比较困难，比如购物时，添加购物车，所以这里为了解决这个问题引入了Cookie技术，来实现期望的保持状态功能。</p>
-<p>​    无状态协议的优点：减少服务器的cpu以及内存资源的消耗</p>
-<p>​    cookie：是通过在请求和响应报文中写入Cookie来控制客户端的状态</p>
-<p>​    有服务器生成cookie并返回给客户端</p>
-<h3 id="3-http报文内的http信息"><a href="#3-http报文内的http信息" class="headerlink" title="3.http报文内的http信息"></a>3.http报文内的http信息</h3><p>​    1.http报文：a.请求行，请求首部字段，通用首部字段，实体首部字段，其他                                                          </p>
-<p>​                  b.状态行，响应首部字段，通用首部字段，实体首部字段，其他</p>
-<p>​    2.编码提升传输熟虑</p>
-<p>​    3.发送多种数据的多部分对象集合</p>
-<p>​    4.内容协商返回合适内容（即浏览器默认语言是什么就返回什么语言（通过服务器驱动，客户端驱动，透明协商来判断</p>
-<h3 id="4-返回结果的http状态码"><a href="#4-返回结果的http状态码" class="headerlink" title="4.返回结果的http状态码"></a>4.返回结果的http状态码</h3><ol>
-<li>1XX 表示接受的请求正在处理</li>
-<li>2XX 表示请求正常处理完毕</li>
-<li>3XX 表示需要附加操作来完成请求</li>
-<li>4xx 表示服务器无法处理请求（客户端请求有问题</li>
-<li>5XX 表示服务器请求出错</li>
-</ol>
-<h3 id="5-与http协作的web服务器"><a href="#5-与http协作的web服务器" class="headerlink" title="5.与http协作的web服务器"></a>5.与http协作的web服务器</h3><ol>
-<li><p>用单台虚拟机实现多个域名：我们在访问网站时，域名会通过DNS服务映射到ip地址之后访问目标网站，所以当有多个域名时，要在host首部内完整置顶主机名或域名uri；</p>
-</li>
-<li><p>通信数据转发程序：代理，网关，隧道<br>   <strong>代理</strong>：是一种由转发功能的应用程序，是服务器 和客户端的中间站</p>
-<p>使用代理服务器的优点：利用缓存技术减少网络带宽的流量，组织内部针对特定网站的访问控制，以获取访问日志为主要目的。（google</p>
-<p>代理可分为两种：1.是否利用缓存2.是否修改报文（不修改为透明代理，修改为非透明代理</p>
-<p><strong>网关</strong>:  是转发其他服务器通信数据的服务器</p>
-<p>能提供非http协议服务，能提高通信的安全性</p>
-<p><strong>隧道</strong>：是在相隔甚远的客户端和服务器两者之前进行中转，并保持双方通信连接的应用程序</p>
-<p>建立一条通信路线，使用ssl等加密手段进行通信。</p>
-</li>
-<li><p>保存资源的缓存（服务器端的缓存有效期限，客户端的缓存</p>
-</li>
-</ol>
-<h3 id="6-http首部"><a href="#6-http首部" class="headerlink" title="6.http首部"></a>6.http首部</h3><ol>
-<li>http报文首部（见3.1<ol>
-<li>请求行，请求首部字段，通用首部字段，实体首部字段，其他 </li>
-<li>使用首部字段是为了给浏览器和服务器提供报文主体大小，所使用的语言，认证信息等内容</li>
-<li>出现重复的http首部字段，那么会因为浏览器的不同而出现不同的处理结果。</li>
-</ol>
-</li>
-</ol>
-<h3 id="7-确保web安全的https"><a href="#7-确保web安全的https" class="headerlink" title="7.确保web安全的https"></a>7.确保web安全的https</h3><h3 id="8-确认访问用户身份的认证"><a href="#8-确认访问用户身份的认证" class="headerlink" title="8.确认访问用户身份的认证"></a>8.确认访问用户身份的认证</h3><h3 id="9-基于http的功能追加协议"><a href="#9-基于http的功能追加协议" class="headerlink" title="9.基于http的功能追加协议"></a>9.基于http的功能追加协议</h3><ol>
-<li>http存在性能瓶颈</li>
-<li>google发布<strong>SPDY</strong>的缩短了50%的加载时间（瓶颈a.一个连接一个请求 b.请求只能从客户端开始 c.请求和响应首部未经压缩就发送，首部信息越多延迟越大 d.发送冗长的首部，每次互相发送相同的首部造成的浪费较大 e.可以选择任意数据压缩格式，非强制压缩</li>
-<li>Ajax （异步 js xml) 达到局部刷新的目的，核心技术是（<strong>XML HttpRequest</strong>）</li>
-<li>Comet  （先响应客户端请求，保持连接直到内容更新）</li>
-<li>使用WebSocket，web浏览器和web服务器之间全双工通信标准</li>
-</ol>
-<p>一旦双方建立websocket协议通信，任意一方都可以直接向对方发送报文。（那么之前的通信协议会经过哪几个步骤通信呢）</p>
-<p>​    <strong>websocket</strong>协议特点（1.<strong>服务器推送功能</strong> 2.<strong>减少通信量</strong>）</p>
-<h3 id="10-构建web内容的技术"><a href="#10-构建web内容的技术" class="headerlink" title="10.构建web内容的技术"></a>10.构建web内容的技术</h3><ol>
-<li>HTML    (DOM:用来操作html和xml)</li>
-<li>与web服务器及程序协作的CGI(cgi会在每次收到请求后都启动一下，大访问量下消耗资源略大)</li>
-<li>java Servlet （servlet常驻内存，运行在web容器)</li>
-<li>XML可扩展标记语言</li>
-<li>JSON轻量级数据标记语言</li>
-</ol>
-<h3 id="11-web的攻击技术"><a href="#11-web的攻击技术" class="headerlink" title="11.web的攻击技术"></a>11.web的攻击技术</h3><ol>
-<li>攻击主要是（web服务 ，sql注入，os注入）</li>
-<li>输出值转义不完全（跨站脚本攻击（xxs)，sql注入，）</li>
-<li>设置或者设计缺陷</li>
-<li>会话管理疏忽引发的安全漏洞</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjyzrub2c000dkspu45ses7te" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjz15dss600047opu57idr6u0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -851,6 +835,10 @@
       <ul>
         
           <li>
+            <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/06/Spring消息/">Spring消息</a>
           </li>
         
@@ -864,10 +852,6 @@
         
           <li>
             <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/24/数据缓存/">数据缓存</a>
           </li>
         
       </ul>

@@ -69,6 +69,115 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-图解http" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/02/图解http/" class="article-date">
+  <time datetime="2019-07-02T12:24:25.000Z" itemprop="datePublished">2019-07-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/02/图解http/">图解http</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-了解web以及网络基础"><a href="#1-了解web以及网络基础" class="headerlink" title="1.了解web以及网络基础"></a>1.了解web以及网络基础</h3><p>​    1.<strong>tcp/ip 分层</strong>：1.应用层 http  2.传输层  tcp 3. 网络层 ip  4.链路层 以太网</p>
+<p>​    客户端 经过4次封装 –&gt; 服务端 经过4 解析  获取客户的请求</p>
+<p>​    2.与http密切相关的协议:tcp,ip,dns</p>
+<p>​    ip 属于网络层，ip协议用来把各种数据包传送给对方，<strong>ip地址</strong>指明了节点被分配到的地址， <strong>mac地址</strong>是指网卡所属的固定地址</p>
+<p>​    ip地址可以和mac地址进行配对</p>
+<p>​    使用<strong>arp</strong>协议凭借mac地址进行通信，通信双方是通过多台计算机和网络设备中转才连接到对方，在中转时，会利用下一站的mac 地址找到下一个中转目标</p>
+<p>​    tcp 属于传输层，用来提供可靠的字节流服务。确认数据是否送达对方（常见的是 三次握手</p>
+<p>​    dns属于应用层，提供域名到ip地址间的解析服务。</p>
+<p>​    3.uri 和 url   url是uri（标志符的子集</p>
+<h3 id="2-简单的http协议"><a href="#2-简单的http协议" class="headerlink" title="2.简单的http协议"></a>2.简单的http协议</h3><p>​    1.http协议用于客户端和服务端之间的通信</p>
+<p>​    请求报文是由请求方法，请求uri ，协议版本，可选的请求首部字段和内容实体构成的。    </p>
+<p>​    响应报文是由协议版本，状态码，状态码原因短语，响应首部字段和实体构成。</p>
+<p>​    2.http是不保存状态的协议，即无状态协议</p>
+<p>​    但是这样会导致业务处理比较困难，比如购物时，添加购物车，所以这里为了解决这个问题引入了Cookie技术，来实现期望的保持状态功能。</p>
+<p>​    无状态协议的优点：减少服务器的cpu以及内存资源的消耗</p>
+<p>​    cookie：是通过在请求和响应报文中写入Cookie来控制客户端的状态</p>
+<p>​    有服务器生成cookie并返回给客户端</p>
+<h3 id="3-http报文内的http信息"><a href="#3-http报文内的http信息" class="headerlink" title="3.http报文内的http信息"></a>3.http报文内的http信息</h3><p>​    1.http报文：a.请求行，请求首部字段，通用首部字段，实体首部字段，其他                                                          </p>
+<p>​                  b.状态行，响应首部字段，通用首部字段，实体首部字段，其他</p>
+<p>​    2.编码提升传输熟虑</p>
+<p>​    3.发送多种数据的多部分对象集合</p>
+<p>​    4.内容协商返回合适内容（即浏览器默认语言是什么就返回什么语言（通过服务器驱动，客户端驱动，透明协商来判断</p>
+<h3 id="4-返回结果的http状态码"><a href="#4-返回结果的http状态码" class="headerlink" title="4.返回结果的http状态码"></a>4.返回结果的http状态码</h3><ol>
+<li>1XX 表示接受的请求正在处理</li>
+<li>2XX 表示请求正常处理完毕</li>
+<li>3XX 表示需要附加操作来完成请求</li>
+<li>4xx 表示服务器无法处理请求（客户端请求有问题</li>
+<li>5XX 表示服务器请求出错</li>
+</ol>
+<h3 id="5-与http协作的web服务器"><a href="#5-与http协作的web服务器" class="headerlink" title="5.与http协作的web服务器"></a>5.与http协作的web服务器</h3><ol>
+<li><p>用单台虚拟机实现多个域名：我们在访问网站时，域名会通过DNS服务映射到ip地址之后访问目标网站，所以当有多个域名时，要在host首部内完整置顶主机名或域名uri；</p>
+</li>
+<li><p>通信数据转发程序：代理，网关，隧道<br>   <strong>代理</strong>：是一种由转发功能的应用程序，是服务器 和客户端的中间站</p>
+<p>使用代理服务器的优点：利用缓存技术减少网络带宽的流量，组织内部针对特定网站的访问控制，以获取访问日志为主要目的。（google</p>
+<p>代理可分为两种：1.是否利用缓存2.是否修改报文（不修改为透明代理，修改为非透明代理</p>
+<p><strong>网关</strong>:  是转发其他服务器通信数据的服务器</p>
+<p>能提供非http协议服务，能提高通信的安全性</p>
+<p><strong>隧道</strong>：是在相隔甚远的客户端和服务器两者之前进行中转，并保持双方通信连接的应用程序</p>
+<p>建立一条通信路线，使用ssl等加密手段进行通信。</p>
+</li>
+<li><p>保存资源的缓存（服务器端的缓存有效期限，客户端的缓存</p>
+</li>
+</ol>
+<h3 id="6-http首部"><a href="#6-http首部" class="headerlink" title="6.http首部"></a>6.http首部</h3><ol>
+<li>http报文首部（见3.1<ol>
+<li>请求行，请求首部字段，通用首部字段，实体首部字段，其他 </li>
+<li>使用首部字段是为了给浏览器和服务器提供报文主体大小，所使用的语言，认证信息等内容</li>
+<li>出现重复的http首部字段，那么会因为浏览器的不同而出现不同的处理结果。</li>
+</ol>
+</li>
+</ol>
+<h3 id="7-确保web安全的https"><a href="#7-确保web安全的https" class="headerlink" title="7.确保web安全的https"></a>7.确保web安全的https</h3><h3 id="8-确认访问用户身份的认证"><a href="#8-确认访问用户身份的认证" class="headerlink" title="8.确认访问用户身份的认证"></a>8.确认访问用户身份的认证</h3><h3 id="9-基于http的功能追加协议"><a href="#9-基于http的功能追加协议" class="headerlink" title="9.基于http的功能追加协议"></a>9.基于http的功能追加协议</h3><ol>
+<li>http存在性能瓶颈</li>
+<li>google发布<strong>SPDY</strong>的缩短了50%的加载时间（瓶颈a.一个连接一个请求 b.请求只能从客户端开始 c.请求和响应首部未经压缩就发送，首部信息越多延迟越大 d.发送冗长的首部，每次互相发送相同的首部造成的浪费较大 e.可以选择任意数据压缩格式，非强制压缩</li>
+<li>Ajax （异步 js xml) 达到局部刷新的目的，核心技术是（<strong>XML HttpRequest</strong>）</li>
+<li>Comet  （先响应客户端请求，保持连接直到内容更新）</li>
+<li>使用WebSocket，web浏览器和web服务器之间全双工通信标准</li>
+</ol>
+<p>一旦双方建立websocket协议通信，任意一方都可以直接向对方发送报文。（那么之前的通信协议会经过哪几个步骤通信呢）</p>
+<p>​    <strong>websocket</strong>协议特点（1.<strong>服务器推送功能</strong> 2.<strong>减少通信量</strong>）</p>
+<h3 id="10-构建web内容的技术"><a href="#10-构建web内容的技术" class="headerlink" title="10.构建web内容的技术"></a>10.构建web内容的技术</h3><ol>
+<li>HTML    (DOM:用来操作html和xml)</li>
+<li>与web服务器及程序协作的CGI(cgi会在每次收到请求后都启动一下，大访问量下消耗资源略大)</li>
+<li>java Servlet （servlet常驻内存，运行在web容器)</li>
+<li>XML可扩展标记语言</li>
+<li>JSON轻量级数据标记语言</li>
+</ol>
+<h3 id="11-web的攻击技术"><a href="#11-web的攻击技术" class="headerlink" title="11.web的攻击技术"></a>11.web的攻击技术</h3><ol>
+<li>攻击主要是（web服务 ，sql注入，os注入）</li>
+<li>输出值转义不完全（跨站脚本攻击（xxs)，sql注入，）</li>
+<li>设置或者设计缺陷</li>
+<li>会话管理疏忽引发的安全漏洞</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjz15dssl000e7opumgu2alux" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-spring-aop" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/06/12/spring-aop/" class="article-date">
@@ -130,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjyzrub1o0005kspu4y4j8xdu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjz15dss600037opuwlym7009" class="article-share-link">Share</a>
       
       
     </footer>
@@ -204,7 +313,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjyzrub1o0007kspuvww9qdm3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjz15dss600067opu0ow02mvl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -264,7 +373,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjyzrub140000kspupqderblc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjz15dsrq00017opu689gc318" class="article-share-link">Share</a>
       
       
     </footer>
@@ -326,7 +435,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjyzrub1e0002kspun8u1muy5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjz15dsqf00007opu1iltj84b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -372,7 +481,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjyzrub1o0006kspu3v5c1som" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjz15dss600077opufprn7pb5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -416,7 +525,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjyzrub25000akspuvum2r8q1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjz15dss600087opux7c50cs5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -462,6 +571,10 @@
       <ul>
         
           <li>
+            <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/06/Spring消息/">Spring消息</a>
           </li>
         
@@ -475,10 +588,6 @@
         
           <li>
             <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/24/数据缓存/">数据缓存</a>
           </li>
         
       </ul>
