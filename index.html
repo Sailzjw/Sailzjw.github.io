@@ -69,6 +69,212 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-centos7安装mysql数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/13/centos7安装mysql数据库/" class="article-date">
+  <time datetime="2019-08-13T11:49:42.000Z" itemprop="datePublished">2019-08-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/13/centos7安装mysql数据库/">centos7安装mysql数据库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>linux下通过rpm包安装mysql</strong>   (另外两种是 yum和源码包安装，源码包安装最优)</p>
+<p>参考链接  <a href="https://blog.csdn.net/u012946310/article/details/81941571" target="_blank" rel="noopener">https://blog.csdn.net/u012946310/article/details/81941571</a>   </p>
+<p>1.安装前，我们可以检测系统是否自带安装 MySQL:</p>
+<blockquote>
+<p>rpm -qa | grep mysql</p>
+</blockquote>
+<p>2.如果你系统有安装，那可以选择进行卸载:</p>
+<blockquote>
+<p>普通删除模式 rpm -e mysql  </p>
+<p>强力删除模式，如果使用上面命令删除时，提示有依赖的其它文件，则用该命令可以对其进行强力删除</p>
+<p>rpm -e –nodeps mysql</p>
+</blockquote>
+<p>3.下载地址：（x选择下载位置）</p>
+<blockquote>
+<p>wget  <a href="https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm" target="_blank" rel="noopener">https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm</a></p>
+</blockquote>
+<p>（报错：wget command not found ，通过yum  -y install wget）</p>
+<p>4.安装：</p>
+<blockquote>
+<p>rpm -ivh mysql57-community-release-el7-9.noarch.rpm yum install mysql-server</p>
+</blockquote>
+<p>   报错：Error: Package: akonadi-mysql-1.9.2-4.el7.x86_64 </p>
+<p>​           Requires: mariadb-server</p>
+<p>​           Removing: 1:mariadb-server-5.5.52-1.el7.x86_64 </p>
+<p>​               mariadb-server = 1:5.5.52-1.el7</p>
+<p>​           Obsoleted By: mysql-community-server-5.6.38-2.el7.x86_64 (mysql56-community)</p>
+<p>​               Not found</p>
+<p>​           Updated By: 1:mariadb-server-5.5.56-2.el7.x86_64 (base)</p>
+<p>​               mariadb-server = 1:5.5.56-2.el7</p>
+<p>You could try using –skip-broken to work around the problem</p>
+<p>You could try running: rpm -Va –nofiles –nodigest</p>
+<p>​    解决：rpm -qa | grep -i mysql</p>
+<p>​    查看当前安装的mysql包</p>
+<p>​    如果存在mariadb-server-5.5.60-1.el7_5.x86_64等包，需要先删除。</p>
+<blockquote>
+<p>​    yum -y remove mariadb-libs</p>
+</blockquote>
+<p>   然后再执行</p>
+<blockquote>
+<p>yum install mysql-server</p>
+</blockquote>
+<p>报错：[Errno 256] No more mirrors to try.</p>
+<p>   解决：yum update 更新一遍安装库，然后继续执行安装，成功</p>
+<p>5.安装成功后，初始化mysql</p>
+<blockquote>
+<p>​    mysqld –initialize</p>
+</blockquote>
+<p>（yum报错another app is currently holding the yum lock;waiting for it to exit：#rm -f /var/run/yum.pid强制关闭进程）</p>
+<p>6.启动 MySQL：</p>
+<p>​        service mysqld start</p>
+<p>​        报错：[root@localhost local]# service mysqld start</p>
+<p>​        Redirecting to /bin/systemctl start  mysqld.service</p>
+<p>​        Job for mysqld.service failed because the control process exited with error   code. See “systemctl status mysqld.service” and “journalctl -xe” for details.</p>
+<p>​        解决：查看报错日志，more  /var/log/mysqld.log</p>
+<p>​        在mysql错误日志里出现：[ERROR] InnoDB: The innodb_system data file ‘ibdata1’ must be writable，及ibdata1必须可写那么解决方案自然是更改对应权限</p>
+<p>​        mysql5.7版本以后是chmod -R 777 /var/lib/mysql</p>
+<p>​        再次启动mysql成功，查看状态： service mysqld status</p>
+<p>​    </p>
+<p>7.验证 MySQL 安装：</p>
+<blockquote>
+<p>使用 mysqladmin 工具来获取服务器状态：</p>
+</blockquote>
+<blockquote>
+<p>mysqladmin –version</p>
+</blockquote>
+<blockquote>
+<p>如果以上命令执行后未输入任何信息，说明你的Mysql未安装成功。</p>
+</blockquote>
+<p>8.连接数据库，mysql -uroot -p</p>
+<p>​    （1）报错（ERROR 1045 (28000): Access denied for user ‘root‘@’localhost’ (using password: YES)）</p>
+<p>   修改密码：</p>
+<p>​     步骤：</p>
+<p>​           [1].停止mysql服务：service mysqld stop</p>
+<p>​            [2].修改配置文件无密码登录：vi /etc/my.cnf</p>
+<p>​            [3].在最尾部加上([mysqld]后面任意一行添加)：skip-grant-tables</p>
+<p>​            [4].保存，启动mysql：service mysqld start</p>
+<p>​            [5].登录mysql：mysql</p>
+<p>​            [6].选中mysql数据库：mysql&gt; use mysql;</p>
+<p>​            [7].首先更新root密码为空字符串：update user set authentication_string=’’ where user=’root’;</p>
+<p>​            [8].退出，删除之前步骤加上的 “skip-grant-tables” 然后重启mysql：</p>
+<p>// 1，退出:exit // 2，修改，删除最后的skip-grant-tablesvim /etc/my.cnf // 3，重启service mysqld restart</p>
+<p>​            [9].然后在登陆Mysql：mysql -uroot</p>
+<p>​            [10].使用ALTER修改root用户密码,方法：ALTER user ‘root‘@’localhost’ IDENTIFIED BY ‘你的密码’;</p>
+<p>9.修改数据库字符集</p>
+<p>​    （1）.登陆mysql查询当前字符集：</p>
+<p>​        mysql&gt;  show variables like ‘char%’;</p>
+<p>​    （2）.编辑my.con配置文件</p>
+<p>​         vim /etc/my.cnf</p>
+<p>​        添加： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[client] 		</span><br><span class="line">default-character-set=utf8mb4 		</span><br><span class="line">[mysql] 		</span><br><span class="line">default-character-set=utf8mb4 </span><br><span class="line">[mysqld] 	</span><br><span class="line">character-set-server=utf8mb4</span><br></pre></td></tr></table></figure>
+<p>​       （3）保存退出，重新启动mysql：service mysqld restart</p>
+<p>a.centos7 <strong>开启3306端口</strong></p>
+<ol>
+<li>systemctl start firewalld 开启防火墙</li>
+<li>firewall-cmd –zone=public –add-port=3306/tcp –permanent</li>
+<li>firewall-cmd –reload</li>
+</ol>
+<blockquote>
+<p>–zone #作用域</p>
+<p>–add-port=80/tcp #添加端口，格式为：端口/通讯协议</p>
+<p>–permanent #永久生效，没有此参数重启后失效</p>
+</blockquote>
+<p>b. <strong>mysql授权</strong></p>
+<p> 允许root用户从任何ip登录（参考链接 <a href="https://www.cnblogs.com/DaDaOnline/p/5535610.html" target="_blank" rel="noopener">https://www.cnblogs.com/DaDaOnline/p/5535610.html</a>）</p>
+<ol>
+<li>GRANT ALL PRIVILEGES ON <em>.</em> TO ‘root‘@’%’ IDENTIFIED BY ‘root’ WITH GRANT OPTION;  </li>
+<li>FLUSH   PRIVILEGES; </li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/13/centos7安装mysql数据库/" data-id="cjz9rlljn0000v0puxi38owep" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux安装" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/13/linux安装/" class="article-date">
+  <time datetime="2019-08-13T11:48:47.000Z" itemprop="datePublished">2019-08-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/13/linux安装/">linux安装</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>linux安装遇到的问题（linux 历史版本下载 <a href="https://wiki.centos.org/Download" target="_blank" rel="noopener">https://wiki.centos.org/Download</a> ）</p>
+<p>之后使用yum命令报错Could not retrieve mirrorlist</p>
+<p>1.查看yum是否正常安装</p>
+<p>2.验证配置 resolv.conf是否正确</p>
+<blockquote>
+<p>vi /etc/resolv.conf</p>
+</blockquote>
+<p>添加如下配置 （i修改）</p>
+<blockquote>
+<p>nameserver 8.8.8.8</p>
+<p>search localdomain</p>
+</blockquote>
+<p>（:wq  保存并退出）</p>
+<p>3.验证网卡配置</p>
+<p>修改网卡配置，让网卡随操作系统自启，确保是root账号进行下面操作</p>
+<blockquote>
+<p>cd /etc/sysconfig/network-scripts </p>
+</blockquote>
+<p>修改网卡配置文件，把“ONBOOT”的值修改为”yes</p>
+<blockquote>
+<p>vi ifcfg-ens33 </p>
+</blockquote>
+<p>保存后重启操作系统，验证yum是否正常工作</p>
+<blockquote>
+<p>yum provides ifconfig</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/13/linux安装/" data-id="cjz9rllju0001v0puga9iu1iy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-使用WebSocket和STMOP实现消息功能" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/" class="article-date">
@@ -152,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/07/使用WebSocket和STMOP实现消息功能/" data-id="cjz15dss600097opuua0j2m64" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/07/使用WebSocket和STMOP实现消息功能/" data-id="cjz9rllma000iv0puusu82nof" class="article-share-link">Share</a>
       
       
     </footer>
@@ -284,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/Spring消息/" data-id="cjz15dss600027opu9leazpdk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/Spring消息/" data-id="cjz9rllke000dv0punfougjsk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -371,7 +577,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjz15dss6000a7opughbenmkv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/使用SpringMVC创建REST/" data-id="cjz9rllk70009v0pu6l4u4xlm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -427,7 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/06/使用远程服务/" data-id="cjz15dssl000c7opu0kq92chc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/06/使用远程服务/" data-id="cjz9rllka000bv0puolno12ae" class="article-share-link">Share</a>
       
       
     </footer>
@@ -495,7 +701,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjz15dssl000g7opul401d7m1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/保护方法应用/" data-id="cjz9rllkd000cv0pu9u4xum7z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -562,7 +768,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjz15dssl000f7opuv6rd03k2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/数据缓存/" data-id="cjz9rllkm000hv0pujc9tcrnm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -626,7 +832,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjz15dssl000d7opu9q1fouxb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/24/使用NoSql数据库/" data-id="cjz9rllkg000ev0puq0zbtjl5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -684,112 +890,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjz15dssl000b7opul8n77d4n" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring和jdbc操作数据库" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/07/17/spring和jdbc操作数据库/" class="article-date">
-  <time datetime="2019-07-17T13:01:41.000Z" itemprop="datePublished">2019-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/17/spring和jdbc操作数据库/">spring和jdbc操作数据库</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>1.基于JDBC 驱动的数据源</p>
-<p>​    1.<strong>DriverManagerDataSource</strong> : 每个链接请求时都会返回一个新的连接，没有进行池化管理</p>
-<p>​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题</p>
-<p>​    3.SingleConnectionDataSource:  每个请求返回同一个连接</p>
-<p>使用jdbc操作数据库太繁琐，后使用模板操作</p>
-<p>​    1.<strong>JdbcTemplate</strong></p>
-<p>​    2.NamedParameterJdbcTemplate</p>
-<p>​    3.SimpleJdbcTemplate</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjz15dss600057opuo82a0lto" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-spring-security" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/07/17/spring-security/" class="article-date">
-  <time datetime="2019-07-17T13:00:04.000Z" itemprop="datePublished">2019-07-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/17/spring-security/">spring security</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>作用：保护web应用</p>
-<p>通过重载WebSecurityConfigurerAdatper 中的一个或者多个方法来实现（1，configure（WebSecurity） 重载配置Spring Security()的 Filter链   2，configure（HttpSecurity） 重载配置如何通过拦截器保护请求  3,configure（AuthenticationManagerBuilder)  通过重载， 配置user-detail服务）</p>
-<p>为SpringMvc启用Web安全性功能简单配置configure(HttpSecurity) </p>
-<blockquote>
-<p>这个配置指定如何保护http请求，以及客户端认证方案，通过authorizeRequests()和anyRequest().authenticated() 就会进入应用的Http请求都要认证，它也配置security基于表单登录以及Http Basic方式的认证。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvcSecurity</span>  <span class="comment">//还配置了参数解析器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> throw Exception</span>&#123;</span><br><span class="line">    	http.authorizenRequests().anyRequest().authenticated()</span><br><span class="line">        .and().formLogin().and().httpBasic();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>没有重载configure(AuthenticationManagerBuilder)方法，所以没有用户存储支撑认证过程，没有用户存储，就是没有用户，这里所有的请求都要认证，所以没人能够登录成功</p>
-</blockquote>
-<p>添加 Spring Security 配置</p>
-<ol>
-<li>配置用户存储</li>
-<li>指定哪些请求需要认证， 哪些请求不认证，以及权限</li>
-<li>提供自定义登陆页面，替换原来的默认登录页面</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableWebMvcSecurity</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBUilder</span></span></span><br><span class="line"><span class="function"><span class="params">                             auth)</span> throw Exception</span>&#123;</span><br><span class="line">        <span class="comment">//启用内存用户存储，适用于测试和开发， 生产中更适合使用数据库保存</span></span><br><span class="line">    	auth.inMemoryAuthentication()  </span><br><span class="line">            .withUser(<span class="string">"user"</span>).password(<span class="string">"password"</span>).roles(<span class="string">"USER"</span>).and()</span><br><span class="line">            .withUser(<span class="string">"admin"</span>).password(<span class="string">"password"</span>).roles(<span class="string">"USER"</span>，<span class="string">"ADMIN"</span>)；</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>基于数据库表进行认证, 然后配置一个数据库</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">DataSource dataSource；</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> configure（AuthenticationManagerBuilder auth) <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">	auth.jdbcAuthentication().dataSource(dataSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>关于密码</p>
-<blockquote>
-<p>passwordEncoder()方法可以接受Security中 passwordEncoder接口的任意实现。</p>
-</blockquote>
-<p>启用HttpBasic认证典型配置</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity hppt)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    http.formLogin().loginPage(<span class="string">"/login"</span>)</span><br><span class="line">        .and().httpasic().realmName(<span class="string">"Spittr"</span>)</span><br><span class="line">        .and()</span><br><span class="line">        ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjz15dss600047opu57idr6u0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjz9rllk8000av0pukbjc92hl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -835,6 +936,14 @@
       <ul>
         
           <li>
+            <a href="/2019/08/13/centos7安装mysql数据库/">centos7安装mysql数据库</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/13/linux安装/">linux安装</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
           </li>
         
@@ -844,14 +953,6 @@
         
           <li>
             <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
-          </li>
-        
-          <li>
-            <a href="/2019/08/06/使用远程服务/">使用远程服务</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/24/保护方法应用/">保护方法应用</a>
           </li>
         
       </ul>

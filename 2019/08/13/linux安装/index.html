@@ -5,19 +5,19 @@
   
 
   
-  <title>spring和jdbc操作数据库 | 启航的博客</title>
+  <title>linux安装 | 启航的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连接 使用jdbc操作数据库太繁琐">
+  <meta name="description" content="linux安装遇到的问题（linux 历史版本下载 https://wiki.centos.org/Download ） 之后使用yum命令报错Could not retrieve mirrorlist 1.查看yum是否正常安装 2.验证配置 resolv.conf是否正确  vi /etc/resolv.conf  添加如下配置 （i修改）  nameserver 8.8.8.8 search">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spring和jdbc操作数据库">
-<meta property="og:url" content="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/index.html">
+<meta property="og:title" content="linux安装">
+<meta property="og:url" content="http://yoursite.com/2019/08/13/linux安装/index.html">
 <meta property="og:site_name" content="启航的博客">
-<meta property="og:description" content="1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连接 使用jdbc操作数据库太繁琐">
+<meta property="og:description" content="linux安装遇到的问题（linux 历史版本下载 https://wiki.centos.org/Download ） 之后使用yum命令报错Could not retrieve mirrorlist 1.查看yum是否正常安装 2.验证配置 resolv.conf是否正确  vi /etc/resolv.conf  添加如下配置 （i修改）  nameserver 8.8.8.8 search">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2019-07-25T11:24:25.744Z">
+<meta property="og:updated_time" content="2019-08-13T11:49:15.321Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="spring和jdbc操作数据库">
-<meta name="twitter:description" content="1.基于JDBC 驱动的数据源 ​    1.DriverManagerDataSource : 每个链接请求时都会返回一个新的连接，没有进行池化管理 ​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题 ​    3.SingleConnectionDataSource:  每个请求返回同一个连接 使用jdbc操作数据库太繁琐">
+<meta name="twitter:title" content="linux安装">
+<meta name="twitter:description" content="linux安装遇到的问题（linux 历史版本下载 https://wiki.centos.org/Download ） 之后使用yum命令报错Could not retrieve mirrorlist 1.查看yum是否正常安装 2.验证配置 resolv.conf是否正确  vi /etc/resolv.conf  添加如下配置 （i修改）  nameserver 8.8.8.8 search">
   
     <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
   
@@ -68,10 +68,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-spring和jdbc操作数据库" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-linux安装" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/07/17/spring和jdbc操作数据库/" class="article-date">
-  <time datetime="2019-07-17T13:01:41.000Z" itemprop="datePublished">2019-07-17</time>
+    <a href="/2019/08/13/linux安装/" class="article-date">
+  <time datetime="2019-08-13T11:48:47.000Z" itemprop="datePublished">2019-08-13</time>
 </a>
     
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      spring和jdbc操作数据库
+      linux安装
     </h1>
   
 
@@ -90,19 +90,37 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>1.基于JDBC 驱动的数据源</p>
-<p>​    1.<strong>DriverManagerDataSource</strong> : 每个链接请求时都会返回一个新的连接，没有进行池化管理</p>
-<p>​    2.SimpleDriverDataSource ： 和1类似，直接使用JDBC驱动，解决特定环境下的类加载问题</p>
-<p>​    3.SingleConnectionDataSource:  每个请求返回同一个连接</p>
-<p>使用jdbc操作数据库太繁琐，后使用模板操作</p>
-<p>​    1.<strong>JdbcTemplate</strong></p>
-<p>​    2.NamedParameterJdbcTemplate</p>
-<p>​    3.SimpleJdbcTemplate</p>
+        <p>linux安装遇到的问题（linux 历史版本下载 <a href="https://wiki.centos.org/Download" target="_blank" rel="noopener">https://wiki.centos.org/Download</a> ）</p>
+<p>之后使用yum命令报错Could not retrieve mirrorlist</p>
+<p>1.查看yum是否正常安装</p>
+<p>2.验证配置 resolv.conf是否正确</p>
+<blockquote>
+<p>vi /etc/resolv.conf</p>
+</blockquote>
+<p>添加如下配置 （i修改）</p>
+<blockquote>
+<p>nameserver 8.8.8.8</p>
+<p>search localdomain</p>
+</blockquote>
+<p>（:wq  保存并退出）</p>
+<p>3.验证网卡配置</p>
+<p>修改网卡配置，让网卡随操作系统自启，确保是root账号进行下面操作</p>
+<blockquote>
+<p>cd /etc/sysconfig/network-scripts </p>
+</blockquote>
+<p>修改网卡配置文件，把“ONBOOT”的值修改为”yes</p>
+<blockquote>
+<p>vi ifcfg-ens33 </p>
+</blockquote>
+<p>保存后重启操作系统，验证yum是否正常工作</p>
+<blockquote>
+<p>yum provides ifconfig</p>
+</blockquote>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjz9rllk60008v0pu51izdh5l" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/13/linux安装/" data-id="cjz9rllju0001v0puga9iu1iy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -111,19 +129,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/07/17/使用ORM持久化数据/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/08/13/centos7安装mysql数据库/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          使用ORM持久化数据
+          centos7安装mysql数据库
         
       </div>
     </a>
   
   
-    <a href="/2019/07/17/spring-security/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">spring security</div>
+      <div class="article-nav-title">使用WebSocket和STMOP实现消息功能</div>
     </a>
   
 </nav>

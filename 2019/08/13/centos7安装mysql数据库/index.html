@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>centos7安装mysql数据库 | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="linux下通过rpm包安装mysql   (另外两种是 yum和源码包安装，源码包安装最优) 参考链接  https://blog.csdn.net/u012946310/article/details/81941571    1.安装前，我们可以检测系统是否自带安装 MySQL:  rpm -qa | grep mysql  2.如果你系统有安装，那可以选择进行卸载:  普通删除模式 rpm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos7安装mysql数据库">
+<meta property="og:url" content="http://yoursite.com/2019/08/13/centos7安装mysql数据库/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="linux下通过rpm包安装mysql   (另外两种是 yum和源码包安装，源码包安装最优) 参考链接  https://blog.csdn.net/u012946310/article/details/81941571    1.安装前，我们可以检测系统是否自带安装 MySQL:  rpm -qa | grep mysql  2.如果你系统有安装，那可以选择进行卸载:  普通删除模式 rpm">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-08-13T11:50:34.679Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="centos7安装mysql数据库">
+<meta name="twitter:description" content="linux下通过rpm包安装mysql   (另外两种是 yum和源码包安装，源码包安装最优) 参考链接  https://blog.csdn.net/u012946310/article/details/81941571    1.安装前，我们可以检测系统是否自带安装 MySQL:  rpm -qa | grep mysql  2.如果你系统有安装，那可以选择进行卸载:  普通删除模式 rpm">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">很高兴遇见你</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-centos7安装mysql数据库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/13/centos7安装mysql数据库/" class="article-date">
+  <time datetime="2019-08-13T11:49:42.000Z" itemprop="datePublished">2019-08-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      centos7安装mysql数据库
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>linux下通过rpm包安装mysql</strong>   (另外两种是 yum和源码包安装，源码包安装最优)</p>
+<p>参考链接  <a href="https://blog.csdn.net/u012946310/article/details/81941571" target="_blank" rel="noopener">https://blog.csdn.net/u012946310/article/details/81941571</a>   </p>
+<p>1.安装前，我们可以检测系统是否自带安装 MySQL:</p>
+<blockquote>
+<p>rpm -qa | grep mysql</p>
+</blockquote>
+<p>2.如果你系统有安装，那可以选择进行卸载:</p>
+<blockquote>
+<p>普通删除模式 rpm -e mysql  </p>
+<p>强力删除模式，如果使用上面命令删除时，提示有依赖的其它文件，则用该命令可以对其进行强力删除</p>
+<p>rpm -e –nodeps mysql</p>
+</blockquote>
+<p>3.下载地址：（x选择下载位置）</p>
+<blockquote>
+<p>wget  <a href="https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm" target="_blank" rel="noopener">https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm</a></p>
+</blockquote>
+<p>（报错：wget command not found ，通过yum  -y install wget）</p>
+<p>4.安装：</p>
+<blockquote>
+<p>rpm -ivh mysql57-community-release-el7-9.noarch.rpm yum install mysql-server</p>
+</blockquote>
+<p>   报错：Error: Package: akonadi-mysql-1.9.2-4.el7.x86_64 </p>
+<p>​           Requires: mariadb-server</p>
+<p>​           Removing: 1:mariadb-server-5.5.52-1.el7.x86_64 </p>
+<p>​               mariadb-server = 1:5.5.52-1.el7</p>
+<p>​           Obsoleted By: mysql-community-server-5.6.38-2.el7.x86_64 (mysql56-community)</p>
+<p>​               Not found</p>
+<p>​           Updated By: 1:mariadb-server-5.5.56-2.el7.x86_64 (base)</p>
+<p>​               mariadb-server = 1:5.5.56-2.el7</p>
+<p>You could try using –skip-broken to work around the problem</p>
+<p>You could try running: rpm -Va –nofiles –nodigest</p>
+<p>​    解决：rpm -qa | grep -i mysql</p>
+<p>​    查看当前安装的mysql包</p>
+<p>​    如果存在mariadb-server-5.5.60-1.el7_5.x86_64等包，需要先删除。</p>
+<blockquote>
+<p>​    yum -y remove mariadb-libs</p>
+</blockquote>
+<p>   然后再执行</p>
+<blockquote>
+<p>yum install mysql-server</p>
+</blockquote>
+<p>报错：[Errno 256] No more mirrors to try.</p>
+<p>   解决：yum update 更新一遍安装库，然后继续执行安装，成功</p>
+<p>5.安装成功后，初始化mysql</p>
+<blockquote>
+<p>​    mysqld –initialize</p>
+</blockquote>
+<p>（yum报错another app is currently holding the yum lock;waiting for it to exit：#rm -f /var/run/yum.pid强制关闭进程）</p>
+<p>6.启动 MySQL：</p>
+<p>​        service mysqld start</p>
+<p>​        报错：[root@localhost local]# service mysqld start</p>
+<p>​        Redirecting to /bin/systemctl start  mysqld.service</p>
+<p>​        Job for mysqld.service failed because the control process exited with error   code. See “systemctl status mysqld.service” and “journalctl -xe” for details.</p>
+<p>​        解决：查看报错日志，more  /var/log/mysqld.log</p>
+<p>​        在mysql错误日志里出现：[ERROR] InnoDB: The innodb_system data file ‘ibdata1’ must be writable，及ibdata1必须可写那么解决方案自然是更改对应权限</p>
+<p>​        mysql5.7版本以后是chmod -R 777 /var/lib/mysql</p>
+<p>​        再次启动mysql成功，查看状态： service mysqld status</p>
+<p>​    </p>
+<p>7.验证 MySQL 安装：</p>
+<blockquote>
+<p>使用 mysqladmin 工具来获取服务器状态：</p>
+</blockquote>
+<blockquote>
+<p>mysqladmin –version</p>
+</blockquote>
+<blockquote>
+<p>如果以上命令执行后未输入任何信息，说明你的Mysql未安装成功。</p>
+</blockquote>
+<p>8.连接数据库，mysql -uroot -p</p>
+<p>​    （1）报错（ERROR 1045 (28000): Access denied for user ‘root‘@’localhost’ (using password: YES)）</p>
+<p>   修改密码：</p>
+<p>​     步骤：</p>
+<p>​           [1].停止mysql服务：service mysqld stop</p>
+<p>​            [2].修改配置文件无密码登录：vi /etc/my.cnf</p>
+<p>​            [3].在最尾部加上([mysqld]后面任意一行添加)：skip-grant-tables</p>
+<p>​            [4].保存，启动mysql：service mysqld start</p>
+<p>​            [5].登录mysql：mysql</p>
+<p>​            [6].选中mysql数据库：mysql&gt; use mysql;</p>
+<p>​            [7].首先更新root密码为空字符串：update user set authentication_string=’’ where user=’root’;</p>
+<p>​            [8].退出，删除之前步骤加上的 “skip-grant-tables” 然后重启mysql：</p>
+<p>// 1，退出:exit // 2，修改，删除最后的skip-grant-tablesvim /etc/my.cnf // 3，重启service mysqld restart</p>
+<p>​            [9].然后在登陆Mysql：mysql -uroot</p>
+<p>​            [10].使用ALTER修改root用户密码,方法：ALTER user ‘root‘@’localhost’ IDENTIFIED BY ‘你的密码’;</p>
+<p>9.修改数据库字符集</p>
+<p>​    （1）.登陆mysql查询当前字符集：</p>
+<p>​        mysql&gt;  show variables like ‘char%’;</p>
+<p>​    （2）.编辑my.con配置文件</p>
+<p>​         vim /etc/my.cnf</p>
+<p>​        添加： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[client] 		</span><br><span class="line">default-character-set=utf8mb4 		</span><br><span class="line">[mysql] 		</span><br><span class="line">default-character-set=utf8mb4 </span><br><span class="line">[mysqld] 	</span><br><span class="line">character-set-server=utf8mb4</span><br></pre></td></tr></table></figure>
+<p>​       （3）保存退出，重新启动mysql：service mysqld restart</p>
+<p>a.centos7 <strong>开启3306端口</strong></p>
+<ol>
+<li>systemctl start firewalld 开启防火墙</li>
+<li>firewall-cmd –zone=public –add-port=3306/tcp –permanent</li>
+<li>firewall-cmd –reload</li>
+</ol>
+<blockquote>
+<p>–zone #作用域</p>
+<p>–add-port=80/tcp #添加端口，格式为：端口/通讯协议</p>
+<p>–permanent #永久生效，没有此参数重启后失效</p>
+</blockquote>
+<p>b. <strong>mysql授权</strong></p>
+<p> 允许root用户从任何ip登录（参考链接 <a href="https://www.cnblogs.com/DaDaOnline/p/5535610.html" target="_blank" rel="noopener">https://www.cnblogs.com/DaDaOnline/p/5535610.html</a>）</p>
+<ol>
+<li>GRANT ALL PRIVILEGES ON <em>.</em> TO ‘root‘@’%’ IDENTIFIED BY ‘root’ WITH GRANT OPTION;  </li>
+<li>FLUSH   PRIVILEGES; </li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/13/centos7安装mysql数据库/" data-id="cjz9rlljn0000v0puxi38owep" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/08/13/linux安装/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">linux安装</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/13/centos7安装mysql数据库/">centos7安装mysql数据库</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/13/linux安装/">linux安装</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/Spring消息/">Spring消息</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
