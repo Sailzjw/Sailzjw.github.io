@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>深入浅出mysql | 启航的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Sql基础 1.登录 1mysql &amp;gt; mysql -uroot -proot; DDL语句：数据定义语言，这些语句定义了不同的数据段、数据库、表、列、索引等数据库对象的定义。常用的语句关键字主要包括 create、drop、alter等。  1.查看所有数据库 1show databases； 2.切换数据库 1use dbname 3.查看数据库所有表 1show tables; 4.查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入浅出mysql">
+<meta property="og:url" content="http://yoursite.com/2019/08/25/深入浅出mysql/index.html">
+<meta property="og:site_name" content="启航的博客">
+<meta property="og:description" content="Sql基础 1.登录 1mysql &amp;gt; mysql -uroot -proot; DDL语句：数据定义语言，这些语句定义了不同的数据段、数据库、表、列、索引等数据库对象的定义。常用的语句关键字主要包括 create、drop、alter等。  1.查看所有数据库 1show databases； 2.切换数据库 1use dbname 3.查看数据库所有表 1show tables; 4.查">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2019-08-25T09:41:00.371Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入浅出mysql">
+<meta name="twitter:description" content="Sql基础 1.登录 1mysql &amp;gt; mysql -uroot -proot; DDL语句：数据定义语言，这些语句定义了不同的数据段、数据库、表、列、索引等数据库对象的定义。常用的语句关键字主要包括 create、drop、alter等。  1.查看所有数据库 1show databases； 2.切换数据库 1use dbname 3.查看数据库所有表 1show tables; 4.查">
+  
+    <link rel="alternate" href="/atom.xml" title="启航的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">启航的博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">很高兴遇见你</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-深入浅出mysql" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/25/深入浅出mysql/" class="article-date">
+  <time datetime="2019-08-25T09:40:10.000Z" itemprop="datePublished">2019-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入浅出mysql
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>Sql基础</strong></p>
+<p>1.登录</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql &gt; mysql -uroot -proot;</span><br></pre></td></tr></table></figure>
+<p>DDL语句：数据定义语言，这些语句定义了不同的数据段、数据库、表、列、索引等数据库对象的定义。常用的语句关键字主要包括 create、drop、alter等。 </p>
+<p>1.查看所有数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>；</span><br></pre></td></tr></table></figure>
+<p>2.切换数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> dbname</span><br></pre></td></tr></table></figure>
+<p>3.查看数据库所有表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</span><br></pre></td></tr></table></figure>
+<p>4.查看表信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">desc  tablename;(<span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span>  tbname;)</span><br></pre></td></tr></table></figure>
+<p>5.创建表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tbname( column_name_1  column_type_1 <span class="keyword">constraints</span>, column_name_2  column_type_2 <span class="keyword">constraints</span> ) ;</span><br></pre></td></tr></table></figure>
+<p>6.删除表 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> tbname;</span><br></pre></td></tr></table></figure>
+<p>7.以员工表(emp)为例 修改表字段属性 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">MODIFY</span> [<span class="keyword">COLUMN</span>] column_definition [<span class="keyword">FIRST</span> | <span class="keyword">AFTER</span> col_name]   </span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp **<span class="keyword">modify</span>** ename <span class="built_in">varchar</span>(<span class="number">20</span>) ；</span><br></pre></td></tr></table></figure>
+<p>  8.添加字段 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">ADD</span> [<span class="keyword">COLUMN</span>] column_definition [<span class="keyword">FIRST</span> | <span class="keyword">AFTER</span> col_name] </span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span>  emp  **<span class="keyword">add</span> <span class="keyword">column</span>** age ing(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+<p>9.删除字段</p>
+<blockquote>
+<p>ALTER TABLE tablename DROP [COLUMN] col_name  </p>
+</blockquote>
+<blockquote>
+<p>alter table emp drop column age; </p>
+</blockquote>
+<p>10.修改表字段名 (区分表字段属性 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">CHANGE</span> [<span class="keyword">COLUMN</span>] old_col_name column_definition [<span class="keyword">FIRST</span>|<span class="keyword">AFTER</span> col_name] </span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">change</span> age age1 <span class="built_in">int</span>(<span class="number">4</span>);</span><br></pre></td></tr></table></figure>
+<p>11.修改字段排序</p>
+<p>在ename后面添加birth字段   属性为date</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">add</span> birth <span class="built_in">date</span>  **<span class="keyword">after</span>** ename;</span><br></pre></td></tr></table></figure>
+<p>把age 字段放到最前面</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">modify</span> age <span class="built_in">int</span>(<span class="number">13</span>) <span class="keyword">first</span>;</span><br></pre></td></tr></table></figure>
+<p>把age 放到ename后面</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">modify</span> age <span class="built_in">int</span>(<span class="number">3</span>) <span class="keyword">after</span> ename;</span><br></pre></td></tr></table></figure>
+<p>12.修改表名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">RENAME</span> [<span class="keyword">TO</span>] new_tablename </span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">rename</span> emp1;</span><br></pre></td></tr></table></figure>
+<p>DML语句：数据操纵语句，用于添加、删除、更新和查询数据库记录，并检查数据完整性，常用的语句关键字主要包括 insert、delete、udpate 和select 等。 </p>
+<p>1.插入记录（如果属性名和属性值对应，可以省略属性名；  可以 插入多条记录，以逗号隔开；对于含可空字段、非空但是含有默认值的字段、自增字段 ）  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tablename (field1,field2,……fieldn) <span class="keyword">VALUES</span>(value1,value2,……valuesn); </span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> emp (ename,sal) <span class="keyword">values</span> (<span class="string">'sail'</span>,<span class="string">'1'</span>);</span><br></pre></td></tr></table></figure>
+<p>2.更新记录（可同时更新多张表）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span>  emp **<span class="keyword">set</span>**  sal  =  <span class="number">111</span> <span class="keyword">where</span> ename = <span class="string">'sail'</span>;</span><br></pre></td></tr></table></figure>
+<p>3.删除记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> tablename [<span class="keyword">WHERE</span> CONDITION] </span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> emp <span class="keyword">where</span> ename = <span class="string">'hh'</span>;</span><br></pre></td></tr></table></figure>
+<p>4.查询记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tablename [<span class="keyword">WHERE</span> CONDITION]</span><br></pre></td></tr></table></figure>
+<p> 查询不重复记录 (where 条件在 <strong>group by</strong> 之前   , <strong>distinct</strong>)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  <span class="keyword">distinct</span>  deptno <span class="keyword">from</span> emp;</span><br><span class="line"><span class="keyword">select</span> deptno <span class="keyword">from</span> emp <span class="keyword">group</span> <span class="keyword">by</span> emp;</span><br></pre></td></tr></table></figure>
+<p>条件查询 null 值不能通过&lt;&gt; 判断，只能is (not) null</p>
+<p> 排序和限制（order by）  默认为升序 asc</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> tablename [<span class="keyword">WHERE</span> CONDITION] [<span class="keyword">ORDER</span> <span class="keyword">BY</span> field1 [<span class="keyword">DESC</span>|<span class="keyword">ASC</span>] ， field2</span><br><span class="line">[<span class="keyword">DESC</span>|<span class="keyword">ASC</span>]，……fieldn [<span class="keyword">DESC</span>|<span class="keyword">ASC</span>]] </span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> sal &gt;<span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> deptno ,sal <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+<p>对于排序后的记录，如果希望只显示一部分 ，可以用limit（从第二条记录起展示3条记录 limit 1,3）默认的起始量是0</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ……[<span class="keyword">LIMIT</span> offset_start,<span class="keyword">row_count</span>]</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> sal <span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<p>通常<strong>limit</strong> 和 <strong>order by</strong> 一起使用进行分页展示</p>
+<p>聚合</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> [field1,field2,……fieldn] fun_name</span><br><span class="line"><span class="keyword">FROM</span> tablename</span><br><span class="line">[<span class="keyword">WHERE</span> where_contition]</span><br><span class="line">[<span class="keyword">GROUP</span> <span class="keyword">BY</span> field1,field2,……fieldn</span><br><span class="line">[<span class="keyword">WITH</span> <span class="keyword">ROLLUP</span>]]</span><br><span class="line">[<span class="keyword">HAVING</span> where_contition]</span><br></pre></td></tr></table></figure>
+<p>fun_name : 表示要做的聚合操作，也就是聚合函数，sum(),count(),max(), min()</p>
+<p>group by : 表示要进行分类聚合的字段，</p>
+<p>with rollup： 表明是否对分类聚合后的结果进行再汇总</p>
+<p>having: 关键字表示对分类后的结果再进行条件的过滤</p>
+<p>tip：having 和 where 的区别在于 having 是对聚合后的结果进行条件的过滤，而 where 是在聚合前就对记录进行过滤，如果逻辑允许，我们尽可能用 where 先过滤记录，这样因为结果集减小，将对聚合的效率大大提高，最后再根据逻辑看是否用 having 进行再过滤。</p>
+<p>表连接:分为内连接和外连接 ，外连接又分成左连接 和右连接(左连接就是左边是全数据 )</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> ename,deptname <span class="keyword">from</span> emp <span class="keyword">left</span> <span class="keyword">join</span> dept <span class="keyword">on</span> emp.deptno=dept.deptno;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> ename,deptname <span class="keyword">from</span> dept <span class="keyword">right</span> <span class="keyword">join</span> emp <span class="keyword">on</span> dept.deptno=emp.deptno;</span><br></pre></td></tr></table></figure>
+<p>连接查询通常用来优化子查询</p>
+<p>记录联合（union 和 union all ）</p>
+<p>union all 是把结果直接和并 ，union是将 union all 后的结果进行一次distinct，去除重复记录后的结果（这里注重的是结果的合并）</p>
+<p>DCL语句：数据控制语句，用于控制不同数据段直接的许可和访问级别的语句。这些语句定义了数据库、表、字段、用户的访问权限和安全级别。主要的语句关键字包括 grant、revoke 等。 </p>
+<p><strong>开发篇</strong></p>
+<p>1.表类型（存储引擎）的选择</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'table_type'</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">'have%'</span>;</span><br></pre></td></tr></table></figure>
+<p>MyISAM</p>
+<p>mysql默认的存储引擎，不支持事务和外键，优点访问速度快</p>
+<p>InnoDB</p>
+<p>提供了具有提交，回滚和崩溃回复能力的事务安全，支持外键，写的速度较慢，</p>
+<p>自增序列(必定是索引，如果是组合索引也肯定是首列)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">last_insert_id</span>();</span><br></pre></td></tr></table></figure>
+<p>外键约束 (可以在建表的时候做一些操作上的限制)</p>
+<p>在导入多个表数据的时候，可以暂时关闭外键约束的检查，在load data和alter table的时候也可以通过暂时关闭外键约束来提高处理速度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#关闭</span><br><span class="line">SET FOREIGN_KEY_CHECKS = 0; </span><br><span class="line">#打开</span><br><span class="line">SET FOREIGN_KEY_CHECKS = 1;</span><br></pre></td></tr></table></figure>
+<p> innodb存储表和索引有以下两种方式 ，表结构保存在.frm </p>
+<ul>
+<li>使用共享表空间存储 数据和索引保存在dir和path定义的表空间中</li>
+<li>使用更多表空间存储  数据和索引保存在 .ibd   需要设置参数 innodb_file_per_table，并重新启动服务后<br>才可以生效 </li>
+</ul>
+<p>MEMORY</p>
+<p>存储引擎使用存在内存中的内容来创建表 ，每个表对应一个磁盘文件，访问迅速，但是关闭数据库，数据就会消失</p>
+<p>MERGE</p>
+<p>是myisam表的组合，MERGE 表在磁盘上保留两个文件，文件名以表的名字开始，一个.frm 文件存储表定义，<br>另一个.MRG 文件包含组合表的信息 </p>
+<p>2.数据类型的挑选</p>
+<p>char长度固定，varchar长度不固定 ，除了InnoDB用varchar之外（支持行级锁），其他推荐char</p>
+<p>text和blob ： text只能保存字符数据  ， blob能保存二级制数据，在删除操作时会用性能影响，所以使用optimize table来优化表</p>
+<p>小结：</p>
+<p>1.对于字符类型，要根据存储引擎来进行相应的选择。<br>2.对精度要求较高的应用中，建议使用定点数来存储数值，以保证结果的准确性。<br>3.对含有 TEXT 和 BLOB 字段的表，如果经常做删除和修改记录的操作要定时执行OPTIMIZE TABLE 功能对表进行碎片整理。<br>4.日期类型要根据实际需要选择能够满足应用的最小存储的日期类型。 </p>
+<p>3.字符集 ：utf-8mb4</p>
+<p>4.索引的设计和使用</p>
+<p>5.存储过程</p>
+<p>6.事务控制和锁定语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 表film_text 获得表锁 ，其他表读的时候就得等待</span></span><br><span class="line"><span class="keyword">lock</span> <span class="keyword">tables</span> film_text <span class="keyword">read</span> ; </span><br><span class="line"><span class="comment"># 释放表锁</span></span><br><span class="line"><span class="keyword">unlock</span> <span class="keyword">tables</span> ；</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">start</span> <span class="keyword">transaction</span> 或 <span class="keyword">begin</span> 可以开始一项新事务</span><br><span class="line"><span class="keyword">commit</span>用来提交事务 </span><br><span class="line"><span class="keyword">rollback</span> 用来回滚事务</span><br><span class="line"><span class="keyword">chain</span> 和<span class="keyword">release</span> 分表用来定义在事务提交或者回滚之后的操作， <span class="keyword">chain</span>会立即启动新事务，冰河刚才事务有相同隔离级别，<span class="keyword">release</span>则会断开和客户端的连接</span><br></pre></td></tr></table></figure>
+<p>7.分布式事务的使用</p>
+<p>使用分布式事务：涉及一个或多个资源管理器和一个事务管理器 </p>
+<ul>
+<li>资源管理器（RM）用于提供通向事务资源的途径 </li>
+<li>事务管理器（TM）用于协调作为一个分布式事务一部分的事务 </li>
+</ul>
+<p>8.sql安全问题</p>
+<ul>
+<li>采用预编译（preparedstatement）防止</li>
+<li>自定义函数检验或者 使用应用程序提供的转换函数</li>
+</ul>
+<p>9.sql mode</p>
+<p>10.sql优化</p>
+<p> a.先查看各种sql的执行频率</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'Com_%'</span>;</span><br></pre></td></tr></table></figure>
+<p>b.定位执行效率低的sql语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">processlist</span></span><br></pre></td></tr></table></figure>
+<p>c. 通过<strong>explain</strong>分析低效sql的执行计划</p>
+<p>11.使用索引</p>
+<p>a.<strong>创建符合索引</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> ind_ename_sal <span class="keyword">on</span> emp (ename, sal);</span><br></pre></td></tr></table></figure>
+<p>1.使用联合索引查询的话，会使用前列的索引，如果只用后面的sal 则不会走索引</p>
+<p>2.使用like 查询， 后面是常量并且只有% 不在第一个字符才会走所以</p>
+<p>3.对大文本进行搜索， 使用全文索引而不用 like ‘% …%’</p>
+<p>4.如果列名是索引，那么使用 column_name  is null 将使用索引</p>
+<p>b.<strong>存在索引但不使用</strong></p>
+<p>1.如果mysql 觉得使用索引比全表扫描慢，则不用索引</p>
+<p>2.memory、heap表中只有where 条件中使用= 进行索引列 ，才能使用索引</p>
+<p>3.用or分割的条件，or前的条件中的列有索引，后面的列中没索引，那么涉及到的索引都不会被用到 </p>
+<p>4.如果列类型是字符串，那么在where 条件中要把字符用’’引起来才能走索引</p>
+<p>c<strong>.查看索引的使用情况</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'Handler_read%'</span>;</span><br></pre></td></tr></table></figure>
+<p>通过handler_read_key的高低判断是否走索引，很高就是在走索引</p>
+<p>Handler_read_rnd_next  值很高表示查询效率低，应该立刻建索引</p>
+<p>12.简单优化</p>
+<p>a.定期分析表和检查表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">analyze</span> <span class="keyword">table</span> emp;</span><br><span class="line"><span class="keyword">check</span> <span class="keyword">table</span> emp;</span><br></pre></td></tr></table></figure>
+<p>b.定期优化表 (提示 recreate + analyze  instead …)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">optimize</span> <span class="keyword">table</span> emp;</span><br></pre></td></tr></table></figure>
+<p>13.常用sql的优化</p>
+<p>a.大批量插入数据  </p>
+<p>myisam 引擎 使用load加载数据时可以先禁用key</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> tb_name <span class="keyword">disable</span> <span class="keyword">keys</span>;</span><br><span class="line">loading the data</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> tb_name <span class="keyword">enable</span> <span class="keyword">keys</span>;</span><br></pre></td></tr></table></figure>
+<p>innodb 1，按主键顺序导入 2，在导入数据前执行 set unique_checks=0,关闭唯一校验 3， set autocommit = 0,关闭自动提交</p>
+<p>b.优化insert语句</p>
+<p> 1.使用批插  2.如果不同客户插入很多行，能通过insert delayed语句来得到更高的速度 3.将索引文件和数据文件分在不同的磁盘上存放 4.批插使用bulk_insert_buffer_size (支队myisam使用) 5.从文件装载表时，使用load data infile会提高效率</p>
+<p>c.优化group by 语句</p>
+<p> group by null 可以优化</p>
+<p>d.优化order by 语句</p>
+<p>where 条件和 order by 使用相同的索引</p>
+<p>e.优化嵌套查询</p>
+<p>join 替代子查询</p>
+<p>f.or条件优化</p>
+<p>必须所有的条件都用索引才生效</p>
+<p>g.使用sql提示</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp  <span class="keyword">use</span> <span class="keyword">index</span> ename <span class="keyword">where</span> ename =<span class="string">'sail'</span>;</span><br></pre></td></tr></table></figure>
+<p> use/ignore/force  index</p>
+<p>14.优化数据库对象</p>
+<p> a.优化表数据类型</p>
+<p> b. 通过拆分表提高表的访问效率</p>
+<p>  第一种是垂直拆分：数据行变小，一个数据页能存更多东西， 查询时就会减少i/o次数 </p>
+<p>  第二种是水平拆分：1. 表很大，分割后可以降低查询时需要读的数据和索引的页数，同时降低了索引层数，提高了查询速度 2. 表数据有独立性，例如不同区域的不同时期数据 3.需要把数据存到不同介质上</p>
+<p> c.使用中间表提高查询速度（中间表的结构和之前的表完全一样）</p>
+<p>15.锁问题</p>
+<p>表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最高,并发度最低 </p>
+<p>行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最低,并发度也最高 </p>
+<p>页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表锁和行锁之间，并发度一般 </p>
+<p> myisam 表锁</p>
+<p>查看表级锁争用情况 ，Table_locks_waited 的值比较高，则说明存在着较严重的表级锁争用情况 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'table%'</span>;</span><br></pre></td></tr></table></figure>
+<p>添加表锁，myisam会自动给涉及的表查询 加读锁 ，更新，删除，插入添加写锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lock</span> <span class="keyword">table</span> emp write;</span><br><span class="line">表write锁定 ，则其他session无法查询，本session无所谓</span><br><span class="line"><span class="keyword">unlock</span> <span class="keyword">table</span>;</span><br></pre></td></tr></table></figure>
+<p>myisam是串行并发，有个系统变量是concurrent_insert ，用来控制并发插入的行为，其值为 0时（不支持并发插入）,为1时（当一个进程读表时，另一个进程从表位插入）,为2时（无论怎样都能在表尾并发插入）</p>
+<p>myisam的锁调度，读锁和写锁是互斥的，读写操作是串行的 ，如果两个进程请求一个myisam表的读锁和写锁，那么mysql则让写进程先获得锁</p>
+<p>设置low-priority-updates 可以降低写的优先级</p>
+<p><strong>InnoDB</strong>锁问题</p>
+<p>一是支持事务（TRANSACTION）；二是采用了行级锁 </p>
+<p> a.事务以及acid属性</p>
+<p> 原子性：事务是一个原子操作单元，其对数据的修改，要么全都执行，要么全都不执行。 </p>
+<p>一致性 ：在事务开始和完成时，数据都必须保持一致状态。 </p>
+<p>隔离性 ：数据库系统提供一定的隔离机制，保证事务在不受外部并发操作影响的“独立”环境执行 。</p>
+<p>持久性 ：事务完成之后，它对于数据的修改是永久性的，即使出现系统故障也能够保持 。</p>
+<p>隔离性的实现原理就是锁   </p>
+<p>innodb中实现了如下两种 行级锁</p>
+<p>a.共享锁(读锁 s lock) ，允许事务读一行数据，阻止其他事务获得相同数据集的排他锁  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tb_name <span class="keyword">where</span> ... <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;</span><br></pre></td></tr></table></figure>
+<p>b.排他锁(写锁 x lock)，允许获得排他锁的事务更新一行数据，阻止其他事务取得相同数据集的共享<br>读锁和排他写锁 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tb_name <span class="keyword">where</span> ... <span class="keyword">for</span> <span class="keyword">update</span>;</span><br></pre></td></tr></table></figure>
+<p>InnoDB支持两种意向锁（即为表级别的锁）：</p>
+<p>a.意向共享锁（读锁 IS Lock），事务想要获取一张表的几行数据的共享锁，事务在给一个数据行加共享锁前必须先取得该表的IS锁。</p>
+<p>b.意向排他锁（写锁 IX Lock），事务想要获取一张表中几行数据的排它锁，事务在给一个数据行加排他锁前必须先取得该表的IX锁。</p>
+<p>四种隔离级别  MVCC </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> tx_isolation = <span class="string">''</span>;</span><br></pre></td></tr></table></figure>
+<p>a.可序列化 serializable： session a 操作数据库,session b 插入数据超时</p>
+<p>b.可重复读 repeatable read:  一个事务按相同的查询条件读以前的数据，其他事务插入了满足条件的新数据，产生幻读    (InnoDB存储引擎在RR隔离级别下，已经使用Next-Key Lock算法避免了幻读。) 就是 读出来的数据还是最初的版本</p>
+<p>c.读已提交  read committed: 事务从开始直到提交之前，所做的任何修改对其他事务都是不可见的。（commit之后才更新数据）</p>
+<p>d.读未提交 read uncommited: 事务中的修改，即使没有提交，对其他事务也都是可见的。（实时更新）</p>
+<p>原子性、一致性、持久性</p>
+<p>redo 和 undo</p>
+<p>脏读：一个事务在对一个记录修改，在这个事务完成并提交前，这条记录的数据就处于不一致的状态，另一个事务也来读同一记录，这就是脏读</p>
+<p>不可重复读:一个事务在读取某些数据后的某个时间，再次读取以前读过的数据，却发现其读出的数据已经发生了改变、或某些记录已经被删除了</p>
+<p>幻读：一个事务按相同的查询条件重新读取以前检索过的数据，其他事务插入了满足其查询条件的新数据。</p>
+<p>获取InnoDB行锁争用情况</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'innodb_row_lock%'</span>;</span><br></pre></td></tr></table></figure>
+<p>如果发现锁争用比较严重，如 InnoDB_row_lock_waits 和 InnoDB_row_lock_time_avg 的值比较高，还可以通过设置 InnoDB Monitors 来进一步观察发生锁冲突的表、数据行等，并分析锁争用的原因 </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table innodb_monitor(a int) engine = innodb;</span><br><span class="line">mysql&gt; show innodb status\g;</span><br><span class="line">mysql&gt; drop table innodb_monitor;</span><br></pre></td></tr></table></figure>
+<p>InnoDB的行锁模式以及加锁方法</p>
+<p>行锁实现方式：</p>
+<p>a.在不通过索引条件查询的时候，InnoDB用的是表锁，而不是行锁。这时候session a 如果请求排他锁之后，session b会等待</p>
+<p>b.行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行记录，但是如果使用相同的索引键，实惠出去锁冲突的</p>
+<p>c.当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，innodb会使用行锁来对数据加锁</p>
+<p>d.即使条件中使用了索引字段，但是mysql会判断是全表扫描还是走索引</p>
+<p>间隙锁：（next-key 锁）</p>
+<p>a.防止幻读</p>
+<p>b.为了满足其恢复和复制的需要</p>
+<p>如何控制间隙锁开启和关闭</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf </span><br><span class="line">添加</span><br><span class="line">[mysqld]</span><br><span class="line">innodb_locks_unsafe_for_binlog=on</span><br></pre></td></tr></table></figure>
+<p>但是会是的binlog日志出问题，一般不推荐使用</p>
+<p>非要使用的话，“select * from source_tab … Into outfile”和“load data infile …”语句组合来间接实现，采用这种方式 MySQL 不会给 source_tab 加锁。 </p>
+<p>死锁：两个事务都需要获得对方持有的排他锁才能继续完成事务，这种循环锁等待 </p>
+<p>优化：1、不同程序并发存取多个表，约定相同的顺序来访问表</p>
+<p>​        2、在程序以批量方式处理数据的时候，如果实现对数据排序，保证线程按固定顺序处理记录，也可以降低死锁概率</p>
+<p>​       3、在事务中，如果要更新记录，应该直接申请足够级别的锁，即排他锁，而不应先申请共享锁，更新时再申请排他锁 </p>
+<p>​       4、 repaetable read –&gt; read committed</p>
+<p>​             5、read committed  时执行 select … for update  则可捕获异常之后rollback释放获得的排他锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">innodb</span> <span class="keyword">status</span>;命令来确定最后一个死锁产生的原因</span><br></pre></td></tr></table></figure>
+<p>16.优化mysql server</p>
+<p>查看服务器参数值： show variables;</p>
+<p>查看服务器运行状态值： show status;</p>
+<p>查看参数的详细定义：mysqld –verbose –help|more </p>
+<p>影响mysql 性能的重要参数</p>
+<p>a.    key_buffer_size  的设置 :此参数用来设置索引块缓存的大小，被所有线程共享，只适用于myisam引擎</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> hot_cache2.key_buffer_size = <span class="number">128</span>*<span class="number">1024</span>;</span><br></pre></td></tr></table></figure>
+<p>设置global之后缩影的新连接，都会生效。</p>
+<p>然后把相关 表的索引放到指定的索引缓存中</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cache</span> <span class="keyword">index</span> sale ,sale2 <span class="keyword">in</span> hot_cache2;</span><br></pre></td></tr></table></figure>
+<p> 把索引预装到默认的key_buffer 中，可以使用load index into cache   tbname 语句</p>
+<p>通过如下与删除索引缓存</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> hot_cache2.key_buffer_size = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>b. table_cache设置</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">flush</span> <span class="keyword">tables</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'open_tables'</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="number">1</span>) <span class="keyword">from</span> t;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> <span class="keyword">status</span> <span class="keyword">like</span> <span class="string">'open_tables'</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="number">1</span>) <span class="keyword">from</span> t;</span><br></pre></td></tr></table></figure>
+<p>c. innodb_buffer_pool_size的设置 :该参数表示InnoDB  存储引擎的表数据和索引数据的最大内存缓冲区大小 </p>
+<p>d.innodb_flush_log_at_trx_commit 设置：该参数用来控制缓冲区中的数据写入到日志文件以及日志文件数据刷新到磁盘的操作时机 </p>
+<p>e.innodb_additional_mem_pool_size 设置：这个参数是 InnoDB 存储引擎用来存储数据库结构和其他内部数据结构的内存池的大小，其默认值是 1MB 。应用程序的表越多，则在这里要分配越多内存</p>
+<p>f.innodb_lock_wait_timeout 的设置 :该参数主要被用于在出现死锁情况的时候等待指定的时间后回滚 </p>
+<p>g.innodb_log_buffer_size 的设置 :日志缓存的大小 ,通常设置为 8～16MB 就足够了。越小的系统它的值越小。系统默认值是 1MB</p>
+<p>h. innodb_log_file_size 的设置 :该参数含义是一个日志组（log group）中每个日志文件的大小 ,在高写入负载尤其是大数据集的情况下很重要。这个值越大则性能相对越高，但是带来的副作用是，当系统灾难时恢复时间会加大。系统默认值是 5MB </p>
+<p>17.磁盘i/o问题</p>
+<p>raid</p>
+<p>18.应用优化</p>
+<p>a.使用连接池</p>
+<p>b.减少对数据库的访问</p>
+<p>​    b1 .避免对同一数据做重复检索</p>
+<p>​    b2.使用查询缓存</p>
+<p>​    b3.增加cache层</p>
+<p>c.负载均衡：是实际应用中使用非常普遍的一种优化方法，它的机制就是利用某种均衡算法，将固定的负载量分布到不同的服务器上，以此来减轻单台服务器的负载 </p>
+<p>​    c1.利用mysql的主从赋值有效分离更新和查询操作</p>
+<p>​    c2.采用分布式数据库架构</p>
+<p>d.表的字段尽量不使用自增长变量 </p>
+<p>对于没有删除行操作的 MyISAM 表，插入操作和查询操作可以并行进行 </p>
+<p>充分利用列有默认值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/25/深入浅出mysql/" data-id="cjzqs9uw0000h5wpux0yekncp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/08/13/centos7安装mysql数据库/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">centos7安装mysql数据库</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/25/深入浅出mysql/">深入浅出mysql</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/13/centos7安装mysql数据库/">centos7安装mysql数据库</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/13/linux安装/">linux安装</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/07/使用WebSocket和STMOP实现消息功能/">使用WebSocket和STMOP实现消息功能</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/06/Spring消息/">Spring消息</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 启航<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

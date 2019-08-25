@@ -69,6 +69,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-使用ORM持久化数据" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/07/17/使用ORM持久化数据/" class="article-date">
+  <time datetime="2019-07-17T13:02:14.000Z" itemprop="datePublished">2019-07-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/17/使用ORM持久化数据/">使用ORM持久化数据</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 一些特性：1，延迟加载 2，预先抓取 3，级联</p>
+<p>spring对持久化框架的集成附加服务：1，支持Spring声明式事务 2，透明的异常处理 3，线程安全的轻量级模板类  4，DAO支持类 5，资源管理</p>
+<ol>
+<li><p>在Spring中集成Hibernate</p>
+<p>1.1声明Hibernate的Session工厂</p>
+<p>LocalSessionFactoryBean， AnnotationSessionFactoryBean</p>
+<p> 使用 Hibernate Session实现不依赖于Spring的Repository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HibernateSpitterRepository</span><span class="params">(SessionFactory sessionFactory)</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.sessionFactory = sessionFactory; <span class="comment">//注入SessionFactory</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Session <span class="title">currentSession</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sessionFactory.getCurrentSession();<span class="comment">//从SessionFactory中获取当前Session</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">count</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> findAll().size();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">save</span><span class="params">(Spitter spitter)</span></span>&#123;</span><br><span class="line">    Serializable id = currentSession().save(spitter); <span class="comment">//使用当前Session</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Spitter(</span><br><span class="line">    (Long) id,</span><br><span class="line">    spitter.getUsername()，</span><br><span class="line">    spitter.getPassword(),</span><br><span class="line">    spitter.getEmail());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findOne</span><span class="params">(<span class="keyword">long</span> id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession().get(Spitter.class, id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Spitter <span class="title">findByUsername</span><span class="params">(String username)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (Spitter) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class)</span><br><span class="line">        .add(Restriction.eq(<span class="string">"username"</span>,username))</span><br><span class="line">        .list().get(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Spitter&gt; <span class="title">findAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (List&lt;Spitter&gt;) currentSession()</span><br><span class="line">        .createCriteria(Spitter.class).list();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：1.这里得先通过@Inject注解让Spring将一个SessionFactory注入到HibernateSpitterRepository的sessionFatory属性中，在currentSession()方法中使用SessionFactory来获取当前事务的Session</p>
+<p>​    2.也使用了@Repository注解，作用：1，构造性注解，能被Spring组件扫描所扫描到，这样不用声明bean   2， 捕获平台相关异常，然后使用Spring统一非检查型异常的形势重新抛出</p>
+<p>不使用Spring模板的<strong>纯Jpa Repository</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JpaSpitterRepository</span> <span class="keyword">implements</span> <span class="title">SpitterRspository</span></span>&#123;</span><br><span class="line">   <span class="meta">@PersistenceUnit</span></span><br><span class="line">    <span class="keyword">private</span> EntityManagerFacotory emf; <span class="comment">//注入EntityManagerFactory </span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addSpitter</span><span class="params">(Spitter spitter)</span></span>&#123;</span><br><span class="line">        emf.createEntityManager().persist(spitter)  <span class="comment">//创建并使用EntityManager</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>借助 Spring  Data 实现自动化的Jpa Repository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">SpitterRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">Spitter</span>, <span class="title">Long</span> &gt;</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p> 配置Spring Data Jpa (xml 方式配置)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">jpa:repositories</span> <span class="attr">base-package</span>=<span class="string">"com.habuma.spittr.db"</span></span></span><br></pre></td></tr></table></figure>
+<p>java 方式配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableJpaRepositories</span>(basePackages=<span class="string">"com.habuma.spittr.db"</span>)   <span class="comment">//关键注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JpaConfigutation</span></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​</p>
+<p>​</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/07/17/使用ORM持久化数据/" data-id="cjzqs9uvn000b5wpurjcndpww" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-spring和jdbc操作数据库" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/07/17/spring和jdbc操作数据库/" class="article-date">
@@ -103,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjz9rllk60008v0pu51izdh5l" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring和jdbc操作数据库/" data-id="cjzqs9uv800035wpukby34koo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -164,7 +222,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjz9rllk20005v0pug2c62h4x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/17/spring-security/" data-id="cjzqs9uve00065wpushooeef4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -273,7 +331,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjz9rllki000fv0puype82dg5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/02/图解http/" data-id="cjzqs9uvw000f5wpul1edfs5k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,7 +402,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjz9rllk10004v0pueir0098i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/12/spring-aop/" data-id="cjzqs9uvb00055wpumz6ybnqn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -418,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjz9rllk30006v0puigh01trm" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/10/spring的高级装配/" data-id="cjzqs9uvf00075wpuu0pedcpi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -478,7 +536,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjz9rllk00003v0puwa7dwyol" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/reentrantLock和synchronized/" data-id="cjzqs9uva00045wpurpim5r7j" class="article-share-link">Share</a>
       
       
     </footer>
@@ -540,7 +598,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjz9rlljx0002v0puz79bgurb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/06/04/Spring-1/" data-id="cjzqs9uv400015wpu50gp53id" class="article-share-link">Share</a>
       
       
     </footer>
@@ -586,7 +644,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjz9rllk40007v0pucugfqx52" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目无法读取application-properties/" data-id="cjzqs9uvi00095wpu1xsu45m0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -630,7 +688,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjz9rllkl000gv0puw9jcyszc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/14/ssm项目启动时的问题/" data-id="cjzqs9uvj000a5wpujf9ggomu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -676,6 +734,10 @@
       <ul>
         
           <li>
+            <a href="/2019/08/25/深入浅出mysql/">深入浅出mysql</a>
+          </li>
+        
+          <li>
             <a href="/2019/08/13/centos7安装mysql数据库/">centos7安装mysql数据库</a>
           </li>
         
@@ -689,10 +751,6 @@
         
           <li>
             <a href="/2019/08/06/Spring消息/">Spring消息</a>
-          </li>
-        
-          <li>
-            <a href="/2019/08/06/使用SpringMVC创建REST/">使用SpringMVC创建REST</a>
           </li>
         
       </ul>
